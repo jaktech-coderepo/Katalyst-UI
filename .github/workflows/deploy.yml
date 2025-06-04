@@ -1,0 +1,57 @@
+name: Deploy Next.js App to FTP
+
+on:
+  # Trigger the workflow on push events to the main branch
+  push:
+    branches: ['deploy']
+
+  # Allow the workflow to be run manually from the Actions tab
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, skipping runs queued between the in-progress run and the latest queued.
+concurrency:
+  group: 'ftp-deploy' # Group name for concurrent deployment control
+  cancel-in-progress: true # Cancel any in-progress deployments for this group
+
+env:
+  FTP_USER: ${{ vars.FTP_USER }} # FTP username from GitHub repository variables
+  FTP_HOST: ${{ vars.FTP_HOST }} # FTP host from GitHub repository variables
+  NEXT_PUBLIC_BACKEND_API_URL: ${{ vars.NEXT_PUBLIC_BACKEND_API_URL }} # Backend URL from GitHub repository variables
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }} # Reacaptca key
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy # Job name
+    runs-on: ubuntu-latest # Use the latest version of Ubuntu for the runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3 # Checkout the code from the repository
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.1 # Set up Node.js environment
+        with:
+          node-version: 20.x # Specify the Node.js version to use
+
+      - name: Install dependencies
+        run: yarn install # Install project dependencies
+
+      - name: Build with yarn
+        run: |
+          NODE_ENV=production yarn run build  # Build the Next.js app in production mode
+
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4 # Use FTP Deploy Action to deploy the app
+        with:
+          server: ${{ env.FTP_HOST }} # FTP server host
+          username: ${{ env.FTP_USER }} # FTP username
+          password: ${{ secrets.FTP_PASS }} # FTP password from GitHub secrets
+          server-dir: / # Directory on the FTP server to deploy to
+          local-dir: ./ # Local directory for exported Next.js files
+          exclude: | # Exclude patterns for files and directories not to deploy
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            src*/**
+            types*/**
+            config*/**
+            test*/**
