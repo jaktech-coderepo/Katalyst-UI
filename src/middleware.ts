@@ -7,7 +7,7 @@ const allowedHosts = [
   'www.bigkatalyst.com',
   'training-edge.cubosquare.com',
   'bigkatalyst.com',
-  'connect-souq-ui.vercel.app',
+  'katalyst-mu.vercel.app',
 ];
 
 export default async function middleware(
