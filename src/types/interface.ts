@@ -132,6 +132,11 @@ export interface ISupervisorList {
   email: string;
 }
 
+export interface IChannelList {
+  channelId: number;
+  channelName: string;
+}
+
 export interface IDashboardFilterOptions {
   startDate?: string;
   endDate?: string;

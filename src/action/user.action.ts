@@ -4,6 +4,7 @@ import {
   AuthenticationResponse,
   CommonError,
   CommonResponseWithoutData,
+  GetAllChannelListResponse,
   GetAllSupervisorListResponse,
   GetAllUserResponse,
   GetAllUserRoleResponse,
@@ -63,7 +64,8 @@ export async function createUserDetails(
       email: formdata.email,
       userRole: formdata.roleid,
       reportingTo: formdata.reportingTo,
-      password: formdata.password,
+      empId: formdata.empId,
+      channelId: formdata.channelId,
       isactive: formdata.isactive,
       captchaToken: formdata.captchaToken,
     };
@@ -73,7 +75,8 @@ export async function createUserDetails(
       email: formdata.email,
       userRole: formdata.roleid,
       reportingTo: formdata.reportingTo,
-      password: formdata.password,
+      empId: formdata.empId,
+      channelId: formdata.channelId,
       isactive: formdata.isactive,
     };
   }
@@ -231,4 +234,29 @@ export async function getAllSupervisorList(): Promise<
   );
   const resData = await res.json();
   return resData;
+}
+
+export async function getAllChannelList(): Promise<
+  GetAllChannelListResponse | CommonError
+> {
+  const mockChannelList = {
+    success: true as const,
+    message: 'channel sucess',
+    data: [
+      { channelId: 1, channelName: 'General' },
+      { channelId: 2, channelName: 'Announcements' },
+      { channelId: 3, channelName: 'Tech Support' },
+      { channelId: 4, channelName: 'Random' },
+      { channelId: 5, channelName: 'HR Updates' },
+      { channelId: 6, channelName: 'Project Alpha' },
+      { channelId: 7, channelName: 'Marketing' },
+      { channelId: 8, channelName: 'Sales' },
+      { channelId: 9, channelName: 'Development' },
+      { channelId: 10, channelName: 'Design' },
+    ],
+  };
+  await new Promise((resolve) => {
+    setTimeout(resolve, 300);
+  });
+  return mockChannelList;
 }
