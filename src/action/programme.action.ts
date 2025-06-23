@@ -4,6 +4,7 @@ import {
   CommonError,
   CreateProgrammeDetailsResponse,
   GetAllProgrammeResponse,
+  GetAllProgrammeTypeListResponse,
   IFilterOptionsWithActiveInActive,
   PutProgrammeResponse,
 } from '@/types';
@@ -11,7 +12,7 @@ import getOptionString from '@/utils/misc';
 import { getAccessToken } from '@/utils/server/token';
 import { revalidateTag } from 'next/cache';
 import { ProgrammeEditType } from '@/validation/programmeEdit.schema';
-import { programmeCreateType } from '@/validation/programmeCreate.schema';
+import { ProgrammeCreateType } from '@/validation/programmeCreate.schema';
 
 export default async function getAllProgrammeDetails(
   options: IFilterOptionsWithActiveInActive = {}
@@ -42,7 +43,7 @@ export default async function getAllProgrammeDetails(
 }
 
 export async function createProgrammeDetails(
-  formdata: programmeCreateType
+  formdata: ProgrammeCreateType
 ): Promise<CreateProgrammeDetailsResponse | CommonError> {
   let data;
   const { captchaToken, ...rest } = formdata;
@@ -112,4 +113,25 @@ export async function deleteProgrammeDetails({
   const data = await res.json();
   revalidateTag('getAllProgrammeDetails');
   return data;
+}
+
+export async function getAllProgrammeTypeList(): Promise<
+  GetAllProgrammeTypeListResponse | CommonError
+> {
+  const mockChannelList = {
+    success: true as const,
+    message: 'programme type success',
+    data: [
+      { programmeTypeId: 1, programmeTypeName: 'Training' },
+      { programmeTypeId: 2, programmeTypeName: 'Sales Support' },
+      { programmeTypeId: 3, programmeTypeName: 'Induction' },
+      { programmeTypeId: 4, programmeTypeName: 'Pre-Induction' },
+      { programmeTypeId: 5, programmeTypeName: 'Post-Induction' },
+      { programmeTypeId: 6, programmeTypeName: 'Learning Journey' },
+    ],
+  };
+  await new Promise((resolve) => {
+    setTimeout(resolve, 300);
+  });
+  return mockChannelList;
 }

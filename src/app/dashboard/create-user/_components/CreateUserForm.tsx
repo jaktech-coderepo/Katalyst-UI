@@ -27,8 +27,8 @@ import useSnakberContext from '@/context/AppProvider/useSnakberContext';
 import { useQueryClient } from '@tanstack/react-query';
 import CaptchaVerifier from '@/components/CaptchaVerifier';
 import PasswordField from '@/components/PasswordField';
+import ChannelField from '@/components/ChannelField/ChannelField';
 import SupervisorField from './SupervisorField';
-import ChannelField from './ChannelField';
 
 export default function CreateUserForm() {
   const queryClient = useQueryClient();

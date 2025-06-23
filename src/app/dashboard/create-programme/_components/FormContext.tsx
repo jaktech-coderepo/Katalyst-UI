@@ -4,18 +4,22 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ReactNode, use } from 'react';
 import templateCreateSchema, {
-  programmeCreateType,
+  ProgrammeCreateType,
 } from '@/validation/programmeCreate.schema';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
 
 const CreateProgrammeFormProvider = ({ children }: { children: ReactNode }) => {
   const { data } = use(GetCurrentUserContext);
-  const methods = useForm<programmeCreateType>({
+  const methods = useForm<ProgrammeCreateType>({
     resolver: zodResolver(templateCreateSchema),
     defaultValues: {
       programe_name: '',
       created_by: data.data.userid,
       is_active: true,
+      channelId: undefined,
+      programmeType: undefined,
+      qrCode: false,
+      attendance: false,
       fields: [],
     },
   });

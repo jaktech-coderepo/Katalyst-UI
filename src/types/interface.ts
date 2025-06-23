@@ -137,6 +137,11 @@ export interface IChannelList {
   channelName: string;
 }
 
+export interface IProgrammeTypeList {
+  programmeTypeId: number;
+  programmeTypeName: string;
+}
+
 export interface IDashboardFilterOptions {
   startDate?: string;
   endDate?: string;
