@@ -69,7 +69,7 @@ export default function TemplateTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.created_at), 'dd-MMM-yy') || '-'}
+                {format(new Date(row.created_at), 'dd-MMM-yy pp') || '-'}
               </TableCell>
               <TableCell
                 sx={{

@@ -63,7 +63,7 @@ export default function BatchDownloadCsv({ limit }: Props) {
                     : key === 'batch_start_date' || key === 'batch_end_date'
                       ? format(
                           new Date(obj[key as keyof typeof obj] as string),
-                          'dd-MMM-yy'
+                          'dd-MMM-yy : pp'
                         ) || '-'
                       : obj[key as keyof typeof obj]
                 )

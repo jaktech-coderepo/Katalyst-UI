@@ -73,7 +73,7 @@ export default function DownloadProgrammeForm() {
                     key === 'created_at'
                     ? `${format(
                         new Date(obj[key as keyof typeof obj] as string),
-                        'dd-MMM-yy HH:mm:ss'
+                        'dd-MMM-yy pp'
                       )}`
                     : format(
                         new Date(obj[key as keyof typeof obj] as string),

@@ -90,7 +90,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.batch_start_date), 'dd-MMM-yy') || '-'}
+                {format(new Date(row.batch_start_date), 'dd-MMM-yy pp') || '-'}
               </TableCell>
               <TableCell
                 sx={{
@@ -99,7 +99,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.batch_end_date), 'dd-MMM-yy') || '-'}
+                {format(new Date(row.batch_end_date), 'dd-MMM-yy pp') || '-'}
               </TableCell>
               {isActive && (
                 <TableCell
