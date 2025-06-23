@@ -26,6 +26,7 @@ import { AppActionType } from '@/types';
 import useSnakberContext from '@/context/AppProvider/useSnakberContext';
 import { useQueryClient } from '@tanstack/react-query';
 import CaptchaVerifier from '@/components/CaptchaVerifier';
+import PasswordField from '@/components/PasswordField';
 import SupervisorField from './SupervisorField';
 import ChannelField from './ChannelField';
 
@@ -48,6 +49,7 @@ export default function CreateUserForm() {
       empId: '',
       reportingTo: undefined,
       channelId: undefined,
+      password: '',
       email: '',
       isactive: true,
       captchaToken: '',
@@ -118,7 +120,7 @@ export default function CreateUserForm() {
       <Grid2 size={{ xs: 12, sm: 6 }}>
         <ObjectSelectField
           control={control}
-          label={'Role Id'}
+          label={'Select Role'}
           name="roleid"
           options={roleData.data.map((role) => ({
             label: role.rolename,
@@ -143,6 +145,9 @@ export default function CreateUserForm() {
           }}
           placeholder="info@martinemail.com"
         />
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+        <PasswordField control={control} name="password" label="Password" />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
         <SupervisorField

@@ -31,7 +31,7 @@ export default function ChannelField<T extends FieldValues>({
   name,
   setValue,
   trigger,
-  lable = 'Channel',
+  lable = 'Select Channel',
   TextFieldProps,
   error,
 }: ChannelFieldProps<T>) {

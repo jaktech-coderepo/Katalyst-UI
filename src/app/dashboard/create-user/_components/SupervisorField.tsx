@@ -29,7 +29,7 @@ export default function SupervisorField<T extends FieldValues>({
   name,
   setValue,
   error,
-  lable = 'Supervisor',
+  lable = 'Select Supervisor',
   TextFieldProps,
 }: SupervisorFieldProps<T>) {
   const { data, isLoading } = useQuery({
