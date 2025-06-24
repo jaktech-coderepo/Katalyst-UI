@@ -9,6 +9,7 @@ import {
 import { redirect } from 'next/navigation';
 import { SignInType } from '@/validation/signin.schema';
 import { getAccessToken } from '@/utils/server/token';
+import USER_TYPE from '@/constants/enum';
 
 export default async function loginUser({
   formData,
@@ -59,7 +60,7 @@ export default async function loginUser({
 
     const userData = await user.json();
 
-    if (userData.data.roleid === 1) {
+    if (userData.data.roleid === USER_TYPE.Admin) {
       redirect(`/dashboard/programme`);
     } else {
       redirect(`/dashboard/batch`);

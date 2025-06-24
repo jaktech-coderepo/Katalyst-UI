@@ -14,6 +14,7 @@ import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined';
 import { redirect } from 'next/navigation';
 import useDebounce from '@/app/hooks/useDebounce';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
+import USER_TYPE from '@/constants/enum';
 import { GetAllBatchContext } from './context/BatchGetAllContext';
 import BatchDownloadCsv from './feature/BatchDownloadCsv';
 import { GetBatchByUserIdContext } from './context/BatchGetByUserIdContext';
@@ -24,7 +25,7 @@ export default function BatchHeader() {
   const {
     paginatedQuery: { data, setQueryParam },
   } =
-    currData.data.roleid === 1
+    currData.data.roleid === USER_TYPE.Admin
       ? use(GetAllBatchContext)
       : use(GetBatchByUserIdContext);
   const [searchValue, setSearchValue] = React.useState('');
@@ -89,7 +90,7 @@ export default function BatchHeader() {
         display={'flex'}
         justifyContent={'end'}
       >
-        {currData.data.roleid === 1 ? (
+        {currData.data.roleid === USER_TYPE.Admin ? (
           <BatchDownloadCsv limit={data.totalCount} />
         ) : (
           <UserSpecificBatchDownloadCsv

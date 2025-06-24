@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
+import USER_TYPE from '@/constants/enum';
 import DownloadProgrammeForm from './DownloadProgrammeForm';
 import ProgrammeShowcase from './ProgrammeShowcase';
 import BatchShowcase from './BatchShowcase';
@@ -194,7 +195,7 @@ export default function MasterOfDashboard() {
           </Grid2>
         </Grid2>
       </Grid2>
-      {currUserData.data.roleid === 1 && (
+      {currUserData.data.roleid === USER_TYPE.Admin && (
         <Grid2 size={12} component={Paper}>
           <DownloadProgrammeForm />
         </Grid2>
