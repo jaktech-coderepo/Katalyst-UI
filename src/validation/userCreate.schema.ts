@@ -8,6 +8,10 @@ const userCreateSchema = z.object({
   reportingTo: z
     .number({ message: 'Supervisor Id is required and must be a valid number' })
     .optional(),
+  empId: z.string().min(1, 'Employee Id is required'),
+  channelId: z
+    .number({ message: 'Channel Id is required and must be a valid number' })
+    .min(1, 'Channel Id is required and must be a valid number'),
   email: z
     .string()
     .min(1, 'Email is required')

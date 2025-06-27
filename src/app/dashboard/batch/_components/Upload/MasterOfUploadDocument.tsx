@@ -125,7 +125,7 @@ export default function MasterOfUploadDocument({
               color="warning"
             >
               {' '}
-              DD-MMM-YY{' '}
+              dd-MMM-yy{' '}
             </Typography>
             (e.g., 15-Jan-24).
           </Typography>

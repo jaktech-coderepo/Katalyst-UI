@@ -9,7 +9,11 @@ const fieldSchema = z.object({
       /^[A-Za-z0-9_]+$/,
       'Only alphabets, numbers, and underscores are allowed.'
     ),
-  field_type: z.string().min(1, 'Field Type is required'),
+  input_type: z.string().min(1, 'Field Type is required'), // textbox, dropdown, checkbox, number
+  field_type: z.string().min(1, 'Field Type is required'), // text, int4, etc.
+  field_values: z.array(z.string()).optional(), // For dropdowns, checkboxes, etc.
+  has_options: z.boolean().optional(), // UI hint if options exist
+  include_in_qr: z.boolean().optional(), // Whether to include in QR
   is_active: z.boolean().optional(),
 });
 
@@ -28,9 +32,19 @@ const programmeCreateSchema = z.object({
       invalid_type_error: 'Created By be a number',
     })
     .min(1, 'Created By is required'),
+  channel_id: z
+    .number({ message: 'Channel Id is required and must be a valid number' })
+    .min(1, 'Channel Id is required and must be a valid number'),
+  programe_type_id: z
+    .number({
+      message: 'Programme Type Id is required and must be a valid number',
+    })
+    .min(1, 'Programme Type Id is required and must be a valid number'),
+  attendance: z.boolean(),
+  enable_qr: z.boolean(),
   fields: z.array(fieldSchema).nonempty('At least one field is required'),
   captchaToken: z.string().optional(),
 });
 
-export type programmeCreateType = z.infer<typeof programmeCreateSchema>;
+export type ProgrammeCreateType = z.infer<typeof programmeCreateSchema>;
 export default programmeCreateSchema;

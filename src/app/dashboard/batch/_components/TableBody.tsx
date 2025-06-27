@@ -12,6 +12,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { format } from 'date-fns';
 import getStatus from '@/utils/getStatus';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
+import USER_TYPE from '@/constants/enum';
 import DeleteModal from './DeleteModel';
 import BatchEditForm from './BatchEditForm';
 import StatusModal from './StatusModal';
@@ -25,7 +26,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
   const {
     paginatedQuery: { data },
   } =
-    currData.data.roleid === 1
+    currData.data.roleid === USER_TYPE.Admin
       ? use(GetAllBatchContext)
       : use(GetBatchByUserIdContext);
 
@@ -90,7 +91,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.batch_start_date), 'dd-MMM-yy') || '-'}
+                {format(new Date(row.batch_start_date), 'dd-MMM-yy pp') || '-'}
               </TableCell>
               <TableCell
                 sx={{
@@ -99,7 +100,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.batch_end_date), 'dd-MMM-yy') || '-'}
+                {format(new Date(row.batch_end_date), 'dd-MMM-yy pp') || '-'}
               </TableCell>
               {isActive && (
                 <TableCell
@@ -116,7 +117,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   {/* {(row.batch_status && 'active') || '-'} */}
                 </TableCell>
               )}
-              {currData.data.roleid === 1 && (
+              {currData.data.roleid === USER_TYPE.Admin && (
                 <TableCell
                   sx={{
                     border: 0,

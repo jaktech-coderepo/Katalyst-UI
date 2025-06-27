@@ -5,6 +5,7 @@ import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { getUser } from '@/action/user.action';
 import ShowError from '@/components/ShowError';
+import USER_TYPE from '@/constants/enum';
 
 export default function useAppMenu() {
   const [appMenu, setAppMenu] = useState<any[]>([]);
@@ -56,9 +57,9 @@ export default function useAppMenu() {
         ...UserMenu,
       ];
 
-      if (response.data.roleid === 1) {
+      if (response.data.roleid === USER_TYPE.Admin) {
         setAppMenu(AdminMenu);
-      } else if (response.data.roleid === 2) {
+      } else if (response.data.roleid === USER_TYPE.Supervisor) {
         setAppMenu(SupervisorMenu);
       } else {
         setAppMenu(UserMenu);

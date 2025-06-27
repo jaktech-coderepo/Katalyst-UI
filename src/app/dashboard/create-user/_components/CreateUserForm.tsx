@@ -1,7 +1,6 @@
 'use client';
 
 import ObjectSelectField from '@/components/ObjectSelectField';
-import PasswordField from '@/components/PasswordField';
 import SimpleTextField from '@/components/SimpleTextField';
 import SubmitButton from '@/components/SubmitButton';
 import MailIcon from '@mui/icons-material/Mail';
@@ -27,6 +26,8 @@ import { AppActionType } from '@/types';
 import useSnakberContext from '@/context/AppProvider/useSnakberContext';
 import { useQueryClient } from '@tanstack/react-query';
 import CaptchaVerifier from '@/components/CaptchaVerifier';
+import PasswordField from '@/components/PasswordField';
+import ChannelField from '@/components/ChannelField/CreateChannelField';
 import SupervisorField from './SupervisorField';
 
 export default function CreateUserForm() {
@@ -45,9 +46,11 @@ export default function CreateUserForm() {
     defaultValues: {
       username: '',
       roleid: undefined,
+      empId: '',
       reportingTo: undefined,
-      email: '',
+      channelId: undefined,
       password: '',
+      email: '',
       isactive: true,
       captchaToken: '',
     },
@@ -107,9 +110,17 @@ export default function CreateUserForm() {
         />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
+        <SimpleTextField
+          control={control}
+          label="Employee Id"
+          name="empId"
+          placeholder="003Kotak"
+        />
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 6 }}>
         <ObjectSelectField
           control={control}
-          label={'Role Id'}
+          label={'Select Role'}
           name="roleid"
           options={roleData.data.map((role) => ({
             label: role.rolename,
@@ -145,34 +156,45 @@ export default function CreateUserForm() {
           TextFieldProps={{
             variant: 'outlined',
           }}
+          error={errors.reportingTo?.message}
+        />
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+        <ChannelField
+          name="channelId"
+          setValue={setValue}
+          trigger={trigger}
+          TextFieldProps={{
+            variant: 'outlined',
+          }}
+          error={errors.channelId?.message}
         />
       </Grid2>
       <Grid2 size={{ xs: 12, md: 6 }}>
-        <Box width={{ xs: 1, md: 0.45 }}>
-          <FormLabel
-            sx={{
-              color: 'common.black',
-              fontWeight: 600,
-              width: '100%',
-              display: 'inline-block',
-              paddingBlock: 1,
-            }}
-            htmlFor={'isactive'}
-          >
-            Is Active
-          </FormLabel>
-          <Controller
-            name={'isactive'}
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <FormControl error={!!error} fullWidth>
-                <Switch {...field} checked={field.value} />
-                <FormHelperText>{error?.message}</FormHelperText>
-              </FormControl>
-            )}
-          />
-        </Box>
+        <FormLabel
+          sx={{
+            color: 'common.black',
+            fontWeight: 600,
+            width: '100%',
+            display: 'inline-block',
+            paddingBlock: 1,
+          }}
+          htmlFor={'isactive'}
+        >
+          Is Active
+        </FormLabel>
+        <Controller
+          name={'isactive'}
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <FormControl error={!!error} fullWidth>
+              <Switch {...field} checked={field.value} />
+              <FormHelperText>{error?.message}</FormHelperText>
+            </FormControl>
+          )}
+        />
       </Grid2>
+      <Grid2 size={{ xs: 12, md: 6 }}></Grid2>
       <Grid2 size={12} container justifyContent={'space-between'} rowGap={2}>
         {showCaptcha && (
           <Box

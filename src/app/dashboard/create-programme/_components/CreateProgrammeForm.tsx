@@ -1,16 +1,11 @@
 'use client';
 
-import SimpleTextField from '@/components/SimpleTextField';
 import SubmitButton from '@/components/SubmitButton';
-import { programmeCreateType } from '@/validation/programmeCreate.schema';
+import { ProgrammeCreateType } from '@/validation/programmeCreate.schema';
 import {
   Box,
   Button,
-  FormControl,
-  FormHelperText,
   Grid2,
-  IconButton,
-  Switch,
   Table,
   TableBody,
   TableCell,
@@ -18,67 +13,20 @@ import {
   TableRow,
 } from '@mui/material';
 import { redirect } from 'next/navigation';
-import React, { useState } from 'react';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import React, { useEffect, useState } from 'react';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import ShowMessage from '@/components/ShowMessage';
-import ObjectSelectField from '@/components/ObjectSelectField';
 import useSnakberContext from '@/context/AppProvider/useSnakberContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { AppActionType } from '@/types';
 import { createProgrammeDetails } from '@/action/programme.action';
 import CaptchaVerifier from '@/components/CaptchaVerifier';
-
-type FieldRowProps = {
-  index: number;
-  remove: (index: number) => void;
-};
-
-function FieldRow({ index, remove }: FieldRowProps) {
-  const { control } = useFormContext<programmeCreateType>();
-  return (
-    <TableRow>
-      <TableCell>
-        <SimpleTextField
-          control={control}
-          label="Field Name"
-          name={`fields.${index}.field_name`}
-        />
-      </TableCell>
-      <TableCell>
-        <ObjectSelectField
-          control={control}
-          label="Field type"
-          name={`fields.${index}.field_type`}
-          options={[
-            { label: 'Text', value: 'text' },
-            { label: 'Number', value: 'int4' },
-            { label: 'Boolean', value: 'boolean' },
-            { label: 'Date', value: 'timestamp' },
-          ]}
-        />
-      </TableCell>
-      <TableCell>
-        <Controller
-          name={`fields.${index}.is_active`}
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <FormControl error={!!error} fullWidth>
-              <Switch {...field} checked={field.value} />
-              <FormHelperText>{error?.message}</FormHelperText>
-            </FormControl>
-          )}
-        />
-      </TableCell>
-      <TableCell>
-        <IconButton onClick={() => remove(index)}>
-          <CancelOutlinedIcon />
-        </IconButton>
-      </TableCell>
-    </TableRow>
-  );
-}
+import CreateChannelField from '@/components/ChannelField/CreateChannelField';
+import SimpleCheckboxField from '@/components/SimpleCheckboxField';
+import CreateProgrammeTypeField from '@/components/ProgrammeTypeField/CreateProgrammeTypeField';
+import useAutoFieldsForAttendance from './useAutoFieldsForAttendance';
+import FieldRowComponent from './FieldRowComponent';
 
 export default function CreateProgrammeForm() {
   const queryClient = useQueryClient();
@@ -90,15 +38,35 @@ export default function CreateProgrammeForm() {
     reset,
     setValue,
     trigger,
+    watch,
     formState: { isValid, isSubmitted, isSubmitting, errors },
-  } = useFormContext<programmeCreateType>();
+  } = useFormContext<ProgrammeCreateType>();
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'fields',
-  });
+  const attendanceChecked = watch('attendance');
 
-  async function onSubmit(formdata: programmeCreateType) {
+  const { fields, append, remove } = useFieldArray({ control, name: 'fields' });
+
+  useAutoFieldsForAttendance(attendanceChecked, fields, append, remove);
+
+  const enableQrChecked = watch('enable_qr');
+  useEffect(() => {
+    if (enableQrChecked) {
+      // When QR is enabled, ensure emp_id and emp_name fields always have include_in_qr set to true
+      fields.forEach((field, idx) => {
+        if (field.field_name === 'emp_id' || field.field_name === 'emp_name') {
+          setValue(`fields.${idx}.include_in_qr`, true);
+        }
+      });
+    } else {
+      // When QR is disabled, remove include_in_qr from all fields (cleans up any stray values)
+      fields.forEach((_, idx) => {
+        setValue(`fields.${idx}.include_in_qr`, undefined);
+      });
+    }
+    // Runs whenever enable_qr checkbox or fields array changes
+  }, [enableQrChecked, fields]);
+
+  async function onSubmit(formdata: ProgrammeCreateType) {
     const response = await createProgrammeDetails(formdata);
     if ('error' in response) {
       dispatch({
@@ -130,18 +98,63 @@ export default function CreateProgrammeForm() {
     }
   }
 
+  const visibleFields = fields
+    .map((field, idx) => ({ ...field, _realIndex: idx }))
+    .filter(
+      (field) =>
+        field.field_name !== 'emp_id' && field.field_name !== 'emp_name'
+    );
+
   return (
     <Grid2
       container
       component={'form'}
       onSubmit={handleSubmit(onSubmit)}
       spacing={2}
-      justifyContent={'center'}
+      justifyContent={{ xs: 'center', md: 'start' }}
       padding={2}
       boxShadow={'0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}
       bgcolor={'common.white'}
       borderRadius={3}
     >
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+        <CreateChannelField
+          name="channel_id"
+          setValue={setValue}
+          trigger={trigger}
+          TextFieldProps={{
+            variant: 'outlined',
+          }}
+          error={errors.channel_id?.message}
+        />
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+        <CreateProgrammeTypeField
+          name="programe_type_id"
+          setValue={setValue}
+          trigger={trigger}
+          TextFieldProps={{
+            variant: 'outlined',
+          }}
+          error={errors.programe_type_id?.message}
+        />
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 'auto' }}>
+        <SimpleCheckboxField
+          control={control}
+          name="attendance"
+          label="Attendance"
+        />
+      </Grid2>
+      {attendanceChecked && (
+        <Grid2 size={{ xs: 12, sm: 'auto' }}>
+          <SimpleCheckboxField
+            control={control}
+            name="enable_qr"
+            label="qr Code"
+          />
+        </Grid2>
+      )}
       <Grid2 size={12}>
         <Table>
           <TableHead>
@@ -153,7 +166,7 @@ export default function CreateProgrammeForm() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {fields.length === 0 ? (
+            {visibleFields.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4}>
                   <ShowMessage
@@ -167,10 +180,10 @@ export default function CreateProgrammeForm() {
                 </TableCell>
               </TableRow>
             ) : (
-              fields.map((field, index) => (
-                <FieldRow
-                  key={`${index}-${field.field_name}-${Date.now()}`}
-                  index={index}
+              visibleFields.map((field) => (
+                <FieldRowComponent
+                  key={`${field._realIndex}-${field.field_name}`}
+                  index={field._realIndex}
                   remove={remove}
                 />
               ))
@@ -185,6 +198,7 @@ export default function CreateProgrammeForm() {
           onClick={() =>
             append({
               field_name: '',
+              input_type: '',
               field_type: '',
               is_active: true,
             })
@@ -223,7 +237,7 @@ export default function CreateProgrammeForm() {
             isSubmitting={isSubmitting}
             isValid={isValid}
             variant="contained"
-            disabled={fields.length === 0}
+            disabled={visibleFields.length === 0}
             sx={{
               backgroundColor: 'secondary.dark',
               color: 'common.white',

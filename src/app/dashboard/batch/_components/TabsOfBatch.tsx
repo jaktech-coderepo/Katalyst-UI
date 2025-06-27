@@ -6,6 +6,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { useTabContext } from '@/context/TabProvider';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
+import USER_TYPE from '@/constants/enum';
 import { GetAllBatchContext } from './context/BatchGetAllContext';
 import { GetBatchByUserIdContext } from './context/BatchGetByUserIdContext';
 
@@ -34,7 +35,7 @@ export default function TabsOfBatch({ elements }: { elements: ReactNode[] }) {
   const {
     paginatedQuery: { setQueryParam },
   } =
-    currData.data.roleid === 1
+    currData.data.roleid === USER_TYPE.Admin
       ? use(GetAllBatchContext)
       : use(GetBatchByUserIdContext);
   const { value, setValue } = useTabContext();

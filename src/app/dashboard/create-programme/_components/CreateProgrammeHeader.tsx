@@ -1,13 +1,13 @@
 'use client';
 
 import SimpleTextField from '@/components/SimpleTextField';
-import { programmeCreateType } from '@/validation/programmeCreate.schema';
+import { ProgrammeCreateType } from '@/validation/programmeCreate.schema';
 import { Grid2, Typography } from '@mui/material';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export default function CreateProgrammeHeader() {
-  const { control } = useFormContext<programmeCreateType>();
+  const { control } = useFormContext<ProgrammeCreateType>();
   return (
     <Grid2
       container

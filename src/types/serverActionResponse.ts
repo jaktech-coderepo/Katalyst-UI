@@ -6,6 +6,7 @@ import {
   IBatchDetails,
   IBatchShowCase,
   IBranchDetails,
+  IChannelList,
   IDashboardAggregateData,
   IDashboardMasterData,
   IDownloadProgramme,
@@ -14,6 +15,7 @@ import {
   IProgrammeDashboardTable,
   IProgrammeDetails,
   IProgrammeShowCase,
+  IProgrammeTypeList,
   ISupervisorList,
   IUserDetails,
   IUserRoles,
@@ -100,6 +102,10 @@ export type GetBatchDashboardChartResponse = CommonResponse<
 
 export type GetEventBranchResponse = CommonResponse<IEventBranch[]>;
 export type GetAllSupervisorListResponse = CommonResponse<ISupervisorList[]>;
+export type GetAllChannelListResponse = CommonResponse<IChannelList[]>;
+export type GetAllProgrammeTypeListResponse = CommonResponse<
+  IProgrammeTypeList[]
+>;
 export type GetAllDashboardMasterDataResponse =
   CommonResponse<IDashboardMasterData>;
 export type GetAllDashboardAggregateDataResponse =

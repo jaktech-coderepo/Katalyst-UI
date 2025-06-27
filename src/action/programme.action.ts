@@ -11,7 +11,7 @@ import getOptionString from '@/utils/misc';
 import { getAccessToken } from '@/utils/server/token';
 import { revalidateTag } from 'next/cache';
 import { ProgrammeEditType } from '@/validation/programmeEdit.schema';
-import { programmeCreateType } from '@/validation/programmeCreate.schema';
+import { ProgrammeCreateType } from '@/validation/programmeCreate.schema';
 
 export default async function getAllProgrammeDetails(
   options: IFilterOptionsWithActiveInActive = {}
@@ -42,7 +42,7 @@ export default async function getAllProgrammeDetails(
 }
 
 export async function createProgrammeDetails(
-  formdata: programmeCreateType
+  formdata: ProgrammeCreateType
 ): Promise<CreateProgrammeDetailsResponse | CommonError> {
   let data;
   const { captchaToken, ...rest } = formdata;

@@ -4,6 +4,7 @@ import {
   AuthenticationResponse,
   CommonError,
   CommonResponseWithoutData,
+  GetAllChannelListResponse,
   GetAllSupervisorListResponse,
   GetAllUserResponse,
   GetAllUserRoleResponse,
@@ -64,6 +65,8 @@ export async function createUserDetails(
       userRole: formdata.roleid,
       reportingTo: formdata.reportingTo,
       password: formdata.password,
+      empId: formdata.empId,
+      channelId: formdata.channelId,
       isactive: formdata.isactive,
       captchaToken: formdata.captchaToken,
     };
@@ -74,6 +77,8 @@ export async function createUserDetails(
       userRole: formdata.roleid,
       reportingTo: formdata.reportingTo,
       password: formdata.password,
+      empId: formdata.empId,
+      channelId: formdata.channelId,
       isactive: formdata.isactive,
     };
   }
@@ -226,6 +231,28 @@ export async function getAllSupervisorList(): Promise<
       },
       next: {
         tags: ['getAllSupervisorList'],
+      },
+    }
+  );
+  const resData = await res.json();
+  return resData;
+}
+
+export async function getAllChannelList(): Promise<
+  GetAllChannelListResponse | CommonError
+> {
+  const token = await getAccessToken();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/channels/getChannels`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ['getAllChannelList'],
       },
     }
   );

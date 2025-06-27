@@ -1,28 +1,33 @@
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import SimpleTextField from '@/components/SimpleTextField';
 import SubmitButton from '@/components/SubmitButton';
 import { useModal } from '@/context/ModalContext';
 import { AppActionType, IProgrammeDetails } from '@/types';
-import programmeEditSchema, {
-  ProgrammeEditType,
-} from '@/validation/programmeEdit.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { ProgrammeEditType } from '@/validation/programmeEdit.schema';
 import {
   Button,
   FormControl,
   FormHelperText,
   FormLabel,
   Grid2,
-  IconButton,
   Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
 } from '@mui/material';
 import React from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import ObjectSelectField from '@/components/ObjectSelectField';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import useSnakberContext from '@/context/AppProvider/useSnakberContext';
 import { updateProgrammeDetails } from '@/action/programme.action';
 import { useQueryClient } from '@tanstack/react-query';
+import EditChannelField from '@/components/ChannelField/EditChannelField';
+import SimpleCheckboxField from '@/components/SimpleCheckboxField';
+import ShowMessage from '@/components/ShowMessage';
+import EditProgrammeTypeField from '@/components/ProgrammeTypeField/EditProgrammeTypeField';
+import useAutoFieldsForAttendanceEdit from './useAutoFieldsForAttendance ';
+import FieldRowComponent from './FieldRowComponent';
 
 export default function ProgrammeEditForm({
   data,
@@ -36,22 +41,27 @@ export default function ProgrammeEditForm({
     control,
     handleSubmit,
     reset,
-    formState: { isValid, isSubmitted, isSubmitting },
-  } = useForm<ProgrammeEditType>({
-    defaultValues: {
-      programe_name: data.programme_name || '',
-      created_by: data.created_by,
-      created_date: data.created_at || '',
-      is_active: data.is_active || true,
-      fields: data.fields || [],
-    },
-    resolver: zodResolver(programmeEditSchema),
-  });
+    watch,
+    setValue,
+    trigger,
+    formState: { isValid, isSubmitted, isSubmitting, errors },
+  } = useFormContext<ProgrammeEditType>();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'fields',
   });
+
+  const attendanceChecked = watch('attendance');
+  const enableQrChecked = watch('enable_qr');
+  useAutoFieldsForAttendanceEdit(
+    attendanceChecked,
+    fields,
+    append,
+    remove,
+    setValue,
+    enableQrChecked
+  );
 
   async function onSubmit(formdata: ProgrammeEditType) {
     const resdata = await updateProgrammeDetails({
@@ -82,6 +92,13 @@ export default function ProgrammeEditForm({
       handleClose();
     }
   }
+
+  const visibleFields = fields
+    .map((field, idx) => ({ ...field, _realIndex: idx }))
+    .filter(
+      (field) =>
+        field.field_name !== 'emp_id' && field.field_name !== 'emp_name'
+    );
 
   return (
     <Grid2
@@ -124,72 +141,82 @@ export default function ProgrammeEditForm({
           )}
         />
       </Grid2>
+      <Grid2 size={{ xs: 12, sm: 5.8 }}>
+        <EditChannelField
+          name="channel_id"
+          setValue={setValue}
+          trigger={trigger}
+          watch={watch}
+          TextFieldProps={{
+            variant: 'outlined',
+          }}
+          error={errors.channel_id?.message}
+        />
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 5.8 }}>
+        <EditProgrammeTypeField
+          name="programe_type_id"
+          setValue={setValue}
+          watch={watch}
+          trigger={trigger}
+          TextFieldProps={{
+            variant: 'outlined',
+          }}
+          error={errors.programe_type_id?.message}
+        />
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 'auto' }}>
+        <SimpleCheckboxField
+          control={control}
+          name="attendance"
+          label="Attendance"
+        />
+      </Grid2>
+      {attendanceChecked && (
+        <Grid2 size={{ xs: 12, sm: 'auto' }}>
+          <SimpleCheckboxField
+            control={control}
+            name="enable_qr"
+            label="qr Code"
+          />
+        </Grid2>
+      )}
       <Grid2 container size={12}>
-        {fields.map((item, index) => (
-          <Grid2
-            container
-            size={12}
-            key={`${index}-${item.field_name}-${Date.now()}`}
-          >
-            <Grid2 size={{ xs: 12, sm: 6, md: 6 }}>
-              <SimpleTextField
-                control={control}
-                label="Field Name"
-                name={`fields.${index}.field_name`}
-              />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
-              <ObjectSelectField
-                control={control}
-                label="Field type"
-                name={`fields.${index}.field_type`}
-                options={[
-                  { label: 'Text', value: 'text' },
-                  { label: 'Number', value: 'int4' },
-                  { label: 'Boolean', value: 'boolean' },
-                  { label: 'Date', value: 'timestamp' },
-                ]}
-                disabled={!!item.field_id && data.is_referenced}
-              />
-            </Grid2>
-            <Grid2 size={{ xs: 6, md: 2 }}>
-              <FormLabel
-                sx={{
-                  color: 'common.black',
-                  fontWeight: 600,
-                  width: '100%',
-                  display: 'inline-block',
-                  paddingBlock: 1,
-                }}
-                htmlFor={`fields.${index}.is_active`}
-              >
-                Fields Is Active
-              </FormLabel>
-              <Controller
-                name={`fields.${index}.is_active`}
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <FormControl error={!!error} fullWidth>
-                    <Switch
-                      {...field}
-                      checked={field.value}
-                      disabled={!!item.field_id && data.is_referenced}
-                    />
-                    <FormHelperText>{error?.message}</FormHelperText>
-                  </FormControl>
-                )}
-              />
-            </Grid2>
-            <Grid2 size={{ xs: 6, md: 1 }}>
-              <IconButton
-                onClick={() => remove(index)}
-                disabled={!!item.field_id && data.is_referenced}
-              >
-                <CancelOutlinedIcon />
-              </IconButton>
-            </Grid2>
-          </Grid2>
-        ))}
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Field Name</TableCell>
+              <TableCell>Field Type</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {visibleFields.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4}>
+                  <ShowMessage
+                    message="Add at least one field"
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  />
+                </TableCell>
+              </TableRow>
+            ) : (
+              visibleFields.map((field) => (
+                <FieldRowComponent
+                  key={`${field._realIndex}-${field.field_name}`}
+                  index={field._realIndex}
+                  remove={remove}
+                  disabled={!!field.field_id && data.is_referenced}
+                />
+              ))
+            )}
+          </TableBody>
+        </Table>
         <Grid2 size={12}>
           <Button
             variant="contained"
@@ -197,6 +224,7 @@ export default function ProgrammeEditForm({
             onClick={() =>
               append({
                 field_name: '',
+                input_type: '',
                 field_type: '',
                 is_active: true,
               })

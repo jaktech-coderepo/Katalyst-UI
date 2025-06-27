@@ -20,6 +20,7 @@ import React, { use } from 'react';
 import ShowMessage from '@/components/ShowMessage';
 import UnfoldMoreOutlinedIcon from '@mui/icons-material/UnfoldMoreOutlined';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
+import USER_TYPE from '@/constants/enum';
 import BatchTableBody from './TableBody';
 import { GetAllBatchContext } from './context/BatchGetAllContext';
 import { GetBatchByUserIdContext } from './context/BatchGetByUserIdContext';
@@ -29,7 +30,7 @@ export default function BatchTableHeader({ isActive }: { isActive: boolean }) {
   const {
     paginatedQuery: { data, setQueryParam },
   } =
-    currData.data.roleid === 1
+    currData.data.roleid === USER_TYPE.Admin
       ? use(GetAllBatchContext)
       : use(GetBatchByUserIdContext);
   const [limit, setLimit] = React.useState('10');
@@ -120,7 +121,7 @@ export default function BatchTableHeader({ isActive }: { isActive: boolean }) {
                     Batch Status
                     <UnfoldMoreOutlinedIcon fontSize="inherit" />
                   </TableCell>
-                  {currData.data.roleid === 1 && (
+                  {currData.data.roleid === USER_TYPE.Admin && (
                     <TableCell
                       sx={{
                         whiteSpace: 'nowrap',
@@ -147,7 +148,7 @@ export default function BatchTableHeader({ isActive }: { isActive: boolean }) {
                 </>
               ) : (
                 <>
-                  {currData.data.roleid === 1 && (
+                  {currData.data.roleid === USER_TYPE.Admin && (
                     <TableCell
                       sx={{
                         whiteSpace: 'nowrap',

@@ -28,18 +28,30 @@ export interface IUserRoles {
   rolename: string;
 }
 
+interface IProgrammeField {
+  field_id: string;
+  is_active: boolean;
+  field_name: string;
+  field_type: string;
+  input_type: string;
+  has_options?: boolean;
+  field_values?: string[];
+  include_in_qr?: boolean;
+}
+
 export interface IProgrammeDetails {
   programme_id: number;
   programme_name: string;
-  fields: {
-    field_id: string;
-    is_active: boolean;
-    field_name: string;
-    field_type: string;
-  }[];
+  fields: IProgrammeField[];
   is_active: boolean;
   created_by: number;
   created_by_name: string;
+  channel_id: number;
+  channel_name: string;
+  programme_type_id: number;
+  programem_type_name: string;
+  attendance: boolean;
+  enable_qr: boolean;
   created_at: string;
   updated_at: string;
   is_referenced: boolean;
@@ -130,6 +142,16 @@ export interface ISupervisorList {
   userid: number;
   username: string;
   email: string;
+}
+
+export interface IChannelList {
+  channel_id: number;
+  channel_name: string;
+}
+
+export interface IProgrammeTypeList {
+  programme_type_id: number;
+  programem_type_name: string;
 }
 
 export interface IDashboardFilterOptions {

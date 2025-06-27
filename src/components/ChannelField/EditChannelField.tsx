@@ -1,4 +1,4 @@
-import { getAllSupervisorList } from '@/action/user.action';
+import { getAllChannelList } from '@/action/user.action';
 import ShowError from '@/components/ShowError';
 import {
   Autocomplete,
@@ -15,27 +15,33 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
+  UseFormWatch,
 } from 'react-hook-form';
 
-interface SupervisorFieldProps<T extends FieldValues> {
+interface EditChannelFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  trigger: UseFormTrigger<T>;
+  watch: UseFormWatch<T>;
   lable?: string;
   TextFieldProps?: MuiTextFieldProps;
   error?: string;
 }
 
-export default function SupervisorField<T extends FieldValues>({
+export default function EditChannelField<T extends FieldValues>({
   name,
   setValue,
-  error,
-  lable = 'Select Supervisor',
+  trigger,
+  watch,
+  lable = 'Select Channel',
   TextFieldProps,
-}: SupervisorFieldProps<T>) {
+  error,
+}: EditChannelFieldProps<T>) {
   const { data, isLoading } = useQuery({
-    queryKey: ['getAllSupervisorList'],
+    queryKey: ['getAllChannelList'],
     queryFn: async () => {
-      const res = await getAllSupervisorList();
+      const res = await getAllChannelList();
       return res;
     },
   });
@@ -47,6 +53,15 @@ export default function SupervisorField<T extends FieldValues>({
   if (isLoading) {
     return <Skeleton variant="rectangular" width={'100%'} height={'100%'} />;
   }
+
+  const options =
+    data?.data?.map((item) => ({
+      label: item.channel_name,
+      value: item.channel_id,
+    })) || [];
+
+  const selected =
+    options.find((option) => option.value === Number(watch(name))) || null;
   return (
     <>
       {lable && (
@@ -64,13 +79,15 @@ export default function SupervisorField<T extends FieldValues>({
         </FormLabel>
       )}
       <Autocomplete
+        value={selected}
         onChange={(_event, newValue) => {
           setValue(name, newValue?.value as PathValue<T, Path<T>>);
+          trigger(name);
         }}
         options={
           data?.data.map((item) => ({
-            label: item.username,
-            value: item.userid,
+            label: item.channel_name,
+            value: item.channel_id,
           })) || []
         }
         size="small"

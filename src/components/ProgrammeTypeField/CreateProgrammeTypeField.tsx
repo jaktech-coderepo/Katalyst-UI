@@ -1,4 +1,4 @@
-import { getAllSupervisorList } from '@/action/user.action';
+import getAllProgrammeTypeList from '@/action/programme-type.action';
 import ShowError from '@/components/ShowError';
 import {
   Autocomplete,
@@ -15,27 +15,30 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
 } from 'react-hook-form';
 
-interface SupervisorFieldProps<T extends FieldValues> {
+interface CreateProgrammeTypeFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  trigger: UseFormTrigger<T>;
   lable?: string;
   TextFieldProps?: MuiTextFieldProps;
   error?: string;
 }
 
-export default function SupervisorField<T extends FieldValues>({
+export default function CreateProgrammeTypeField<T extends FieldValues>({
   name,
   setValue,
+  trigger,
   error,
-  lable = 'Select Supervisor',
+  lable = 'Select ProgrammeType',
   TextFieldProps,
-}: SupervisorFieldProps<T>) {
+}: CreateProgrammeTypeFieldProps<T>) {
   const { data, isLoading } = useQuery({
-    queryKey: ['getAllSupervisorList'],
+    queryKey: ['getAllProgrammeTypeList'],
     queryFn: async () => {
-      const res = await getAllSupervisorList();
+      const res = await getAllProgrammeTypeList();
       return res;
     },
   });
@@ -66,11 +69,12 @@ export default function SupervisorField<T extends FieldValues>({
       <Autocomplete
         onChange={(_event, newValue) => {
           setValue(name, newValue?.value as PathValue<T, Path<T>>);
+          trigger(name);
         }}
         options={
           data?.data.map((item) => ({
-            label: item.username,
-            value: item.userid,
+            label: item.programem_type_name,
+            value: item.programme_type_id,
           })) || []
         }
         size="small"

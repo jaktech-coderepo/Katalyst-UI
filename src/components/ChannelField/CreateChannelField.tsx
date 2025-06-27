@@ -1,4 +1,4 @@
-import { getAllSupervisorList } from '@/action/user.action';
+import { getAllChannelList } from '@/action/user.action';
 import ShowError from '@/components/ShowError';
 import {
   Autocomplete,
@@ -15,27 +15,30 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
 } from 'react-hook-form';
 
-interface SupervisorFieldProps<T extends FieldValues> {
+interface CreateChannelFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  trigger: UseFormTrigger<T>;
   lable?: string;
   TextFieldProps?: MuiTextFieldProps;
   error?: string;
 }
 
-export default function SupervisorField<T extends FieldValues>({
+export default function CreateChannelField<T extends FieldValues>({
   name,
   setValue,
-  error,
-  lable = 'Select Supervisor',
+  trigger,
+  lable = 'Select Channel',
   TextFieldProps,
-}: SupervisorFieldProps<T>) {
+  error,
+}: CreateChannelFieldProps<T>) {
   const { data, isLoading } = useQuery({
-    queryKey: ['getAllSupervisorList'],
+    queryKey: ['getAllChannelList'],
     queryFn: async () => {
-      const res = await getAllSupervisorList();
+      const res = await getAllChannelList();
       return res;
     },
   });
@@ -66,11 +69,12 @@ export default function SupervisorField<T extends FieldValues>({
       <Autocomplete
         onChange={(_event, newValue) => {
           setValue(name, newValue?.value as PathValue<T, Path<T>>);
+          trigger(name);
         }}
         options={
           data?.data.map((item) => ({
-            label: item.username,
-            value: item.userid,
+            label: item.channel_name,
+            value: item.channel_id,
           })) || []
         }
         size="small"
