@@ -241,24 +241,21 @@ export async function getAllSupervisorList(): Promise<
 export async function getAllChannelList(): Promise<
   GetAllChannelListResponse | CommonError
 > {
-  const mockChannelList = {
-    success: true as const,
-    message: 'channel sucess',
-    data: [
-      { channelId: 1, channelName: 'General' },
-      { channelId: 2, channelName: 'Announcements' },
-      { channelId: 3, channelName: 'Tech Support' },
-      { channelId: 4, channelName: 'Random' },
-      { channelId: 5, channelName: 'HR Updates' },
-      { channelId: 6, channelName: 'Project Alpha' },
-      { channelId: 7, channelName: 'Marketing' },
-      { channelId: 8, channelName: 'Sales' },
-      { channelId: 9, channelName: 'Development' },
-      { channelId: 10, channelName: 'Design' },
-    ],
-  };
-  await new Promise((resolve) => {
-    setTimeout(resolve, 300);
-  });
-  return mockChannelList;
+  const token = await getAccessToken();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/channels/getChannels`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ['getAllChannelList'],
+      },
+    }
+  );
+  const resData = await res.json();
+  return resData;
 }

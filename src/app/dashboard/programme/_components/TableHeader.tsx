@@ -69,6 +69,28 @@ export default function TemplateTableHeader({
                   fontSize: 18,
                 }}
               >
+                Channel
+                <UnfoldMoreOutlinedIcon fontSize="inherit" />
+              </TableCell>
+              <TableCell
+                sx={{
+                  whiteSpace: 'nowrap',
+                  color: 'common.black',
+                  fontWeight: 500,
+                  fontSize: 18,
+                }}
+              >
+                Programme Type
+                <UnfoldMoreOutlinedIcon fontSize="inherit" />
+              </TableCell>
+              <TableCell
+                sx={{
+                  whiteSpace: 'nowrap',
+                  color: 'common.black',
+                  fontWeight: 500,
+                  fontSize: 18,
+                }}
+              >
                 Is Active
                 <UnfoldMoreOutlinedIcon fontSize="inherit" />
               </TableCell>

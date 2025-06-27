@@ -18,7 +18,7 @@ import {
   UseFormTrigger,
 } from 'react-hook-form';
 
-interface ChannelFieldProps<T extends FieldValues> {
+interface CreateChannelFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
   trigger: UseFormTrigger<T>;
@@ -27,14 +27,14 @@ interface ChannelFieldProps<T extends FieldValues> {
   error?: string;
 }
 
-export default function ChannelField<T extends FieldValues>({
+export default function CreateChannelField<T extends FieldValues>({
   name,
   setValue,
   trigger,
   lable = 'Select Channel',
   TextFieldProps,
   error,
-}: ChannelFieldProps<T>) {
+}: CreateChannelFieldProps<T>) {
   const { data, isLoading } = useQuery({
     queryKey: ['getAllChannelList'],
     queryFn: async () => {
@@ -73,8 +73,8 @@ export default function ChannelField<T extends FieldValues>({
         }}
         options={
           data?.data.map((item) => ({
-            label: item.channelName,
-            value: item.channelId,
+            label: item.channel_name,
+            value: item.channel_id,
           })) || []
         }
         size="small"

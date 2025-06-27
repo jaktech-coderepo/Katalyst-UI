@@ -4,7 +4,6 @@ import {
   CommonError,
   CreateProgrammeDetailsResponse,
   GetAllProgrammeResponse,
-  GetAllProgrammeTypeListResponse,
   IFilterOptionsWithActiveInActive,
   PutProgrammeResponse,
 } from '@/types';
@@ -113,25 +112,4 @@ export async function deleteProgrammeDetails({
   const data = await res.json();
   revalidateTag('getAllProgrammeDetails');
   return data;
-}
-
-export async function getAllProgrammeTypeList(): Promise<
-  GetAllProgrammeTypeListResponse | CommonError
-> {
-  const mockChannelList = {
-    success: true as const,
-    message: 'programme type success',
-    data: [
-      { programmeTypeId: 1, programmeTypeName: 'Training' },
-      { programmeTypeId: 2, programmeTypeName: 'Sales Support' },
-      { programmeTypeId: 3, programmeTypeName: 'Induction' },
-      { programmeTypeId: 4, programmeTypeName: 'Pre-Induction' },
-      { programmeTypeId: 5, programmeTypeName: 'Post-Induction' },
-      { programmeTypeId: 6, programmeTypeName: 'Learning Journey' },
-    ],
-  };
-  await new Promise((resolve) => {
-    setTimeout(resolve, 300);
-  });
-  return mockChannelList;
 }

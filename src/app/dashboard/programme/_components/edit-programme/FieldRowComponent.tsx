@@ -10,20 +10,25 @@ import {
   Grid2,
 } from '@mui/material';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import { ProgrammeCreateType } from '@/validation/programmeCreate.schema';
 import SimpleTextField from '@/components/SimpleTextField';
 import SimpleCheckboxField from '@/components/SimpleCheckboxField';
 import ChipAutocompleteField from '@/components/ChipAutocompleteField';
+import { ProgrammeEditType } from '@/validation/programmeEdit.schema';
 import InputTypeSelectField from './InputTypeSelectField';
 
 type FieldRowProps = {
   index: number;
   remove: (index: number) => void;
+  disabled: boolean;
 };
 
-export default function FieldRowComponent({ index, remove }: FieldRowProps) {
+export default function FieldRowComponent({
+  index,
+  remove,
+  disabled,
+}: FieldRowProps) {
   const { control, watch, trigger, setValue } =
-    useFormContext<ProgrammeCreateType>();
+    useFormContext<ProgrammeEditType>();
   const inputType = watch(`fields.${index}.input_type`);
   const fieldValues = watch(`fields.${index}.field_values`) || [];
   const hasOptions = watch(`fields.${index}.has_options`);
@@ -72,6 +77,7 @@ export default function FieldRowComponent({ index, remove }: FieldRowProps) {
                 { label: 'Checkbox', value: 'checkbox' },
                 { label: 'Dropdown', value: 'dropdown' },
               ]}
+              disabled={disabled}
             />
           </Grid2>
 
@@ -120,14 +126,14 @@ export default function FieldRowComponent({ index, remove }: FieldRowProps) {
           control={control}
           render={({ field, fieldState: { error } }) => (
             <FormControl error={!!error} fullWidth>
-              <Switch {...field} checked={field.value} />
+              <Switch {...field} checked={field.value} disabled={disabled} />
               <FormHelperText>{error?.message}</FormHelperText>
             </FormControl>
           )}
         />
       </TableCell>
       <TableCell>
-        <IconButton onClick={() => remove(index)}>
+        <IconButton onClick={() => remove(index)} disabled={disabled}>
           <CancelOutlinedIcon />
         </IconButton>
       </TableCell>

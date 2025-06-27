@@ -9,9 +9,10 @@ import TableElement from '@/components/TableElement';
 import ScrollDialog from '@/components/Modal';
 import { format } from 'date-fns';
 import DeleteModal from './DeleteModel';
-import ProgrammeEditForm from './ProgrammeEditForm';
+import ProgrammeEditForm from './edit-programme/ProgrammeEditForm';
 import { GetAllProgrammeContext } from './ProgrammeGetAllContext';
 import StatusModal from './StatusModal';
+import EditProgrammeFormProvider from './edit-programme/FormContext';
 
 export default function TemplateTableBody({ isActive }: { isActive: boolean }) {
   const {
@@ -60,6 +61,24 @@ export default function TemplateTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
+                {row.channel_name || '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
+                {row.programem_type_name || '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
                 {row.is_active === true ? 'Yes' : 'No'}
               </TableCell>
               <TableCell
@@ -92,8 +111,12 @@ export default function TemplateTableBody({ isActive }: { isActive: boolean }) {
                   <ScrollDialog
                     title="Update Template"
                     icon={<BorderColorIcon />}
-                    content={<ProgrammeEditForm data={row} />}
-                    size="md"
+                    content={
+                      <EditProgrammeFormProvider data={row}>
+                        <ProgrammeEditForm data={row} />
+                      </EditProgrammeFormProvider>
+                    }
+                    size="lg"
                     sx={{
                       color: 'secondary.dark',
                       bgcolor: 'secondary.100',

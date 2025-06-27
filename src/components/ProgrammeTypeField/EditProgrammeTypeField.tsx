@@ -1,4 +1,4 @@
-import { getAllProgrammeTypeList } from '@/action/programme.action';
+import getAllProgrammeTypeList from '@/action/programme-type.action';
 import ShowError from '@/components/ShowError';
 import {
   Autocomplete,
@@ -16,25 +16,28 @@ import {
   PathValue,
   UseFormSetValue,
   UseFormTrigger,
+  UseFormWatch,
 } from 'react-hook-form';
 
-interface ProgrammeTypeFieldProps<T extends FieldValues> {
+interface EditProgrammeTypeFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
   trigger: UseFormTrigger<T>;
+  watch: UseFormWatch<T>;
   lable?: string;
   TextFieldProps?: MuiTextFieldProps;
   error?: string;
 }
 
-export default function ProgrammeTypeField<T extends FieldValues>({
+export default function EditProgrammeTypeField<T extends FieldValues>({
   name,
   setValue,
   trigger,
+  watch,
   error,
   lable = 'Select ProgrammeType',
   TextFieldProps,
-}: ProgrammeTypeFieldProps<T>) {
+}: EditProgrammeTypeFieldProps<T>) {
   const { data, isLoading } = useQuery({
     queryKey: ['getAllProgrammeTypeList'],
     queryFn: async () => {
@@ -50,6 +53,15 @@ export default function ProgrammeTypeField<T extends FieldValues>({
   if (isLoading) {
     return <Skeleton variant="rectangular" width={'100%'} height={'100%'} />;
   }
+
+  const options =
+    data?.data?.map((item) => ({
+      label: item.programem_type_name,
+      value: item.programme_type_id,
+    })) || [];
+
+  const selected =
+    options.find((option) => option.value === Number(watch(name))) || null;
   return (
     <>
       {lable && (
@@ -67,14 +79,15 @@ export default function ProgrammeTypeField<T extends FieldValues>({
         </FormLabel>
       )}
       <Autocomplete
+        value={selected}
         onChange={(_event, newValue) => {
           setValue(name, newValue?.value as PathValue<T, Path<T>>);
           trigger(name);
         }}
         options={
           data?.data.map((item) => ({
-            label: item.programmeTypeName,
-            value: item.programmeTypeId,
+            label: item.programem_type_name,
+            value: item.programme_type_id,
           })) || []
         }
         size="small"

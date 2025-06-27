@@ -10,26 +10,28 @@ export default function useAutoFieldsForAttendance(
 ) {
   useEffect(() => {
     if (attendanceChecked) {
-      const hasEmpId = fields.some((f) => f.field_name === 'employee_id');
-      const hasEmpName = fields.some((f) => f.field_name === 'employee_name');
+      const hasEmpId = fields.some((f) => f.field_name === 'emp_id');
+      const hasEmpName = fields.some((f) => f.field_name === 'emp_name');
       if (!hasEmpId)
         append({
-          field_name: 'employee_id',
-          field_type: 'int4',
+          field_name: 'emp_id',
+          input_type: 'textbox',
+          field_type: 'text',
+          include_in_qr: true,
           is_active: true,
         });
       if (!hasEmpName)
         append({
-          field_name: 'employee_name',
+          field_name: 'emp_name',
+          input_type: 'textbox',
           field_type: 'text',
+          include_in_qr: true,
           is_active: true,
         });
     } else {
       const indicesToRemove = fields
         .map((f, idx) =>
-          f.field_name === 'employee_id' || f.field_name === 'employee_name'
-            ? idx
-            : -1
+          f.field_name === 'emp_id' || f.field_name === 'emp_name' ? idx : -1
         )
         .filter((idx) => idx !== -1)
         .sort((a, b) => b - a);
