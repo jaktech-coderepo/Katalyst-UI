@@ -20,7 +20,8 @@ import { updateUserDetails } from '@/action/user.action';
 import { AppActionType, IUserDetails } from '@/types';
 import useSnakberContext from '@/context/AppProvider/useSnakberContext';
 import { useQueryClient } from '@tanstack/react-query';
-import SupervisorField from './SupervisorField';
+import EditSupervisorField from '@/components/SupervisorField/EditSupervisorField';
+import EditChannelField from '@/components/ChannelField/EditChannelField';
 
 export default function UserEditForm({ data }: { data: IUserDetails }) {
   const { data: roleData } = use(GetAllUserRoleContext);
@@ -33,12 +34,15 @@ export default function UserEditForm({ data }: { data: IUserDetails }) {
     watch,
     handleSubmit,
     reset,
-    formState: { isValid, isSubmitted, isSubmitting },
+    trigger,
+    formState: { isValid, isSubmitted, isSubmitting, errors },
   } = useForm<UserEditType>({
     defaultValues: {
       username: data.username || '',
+      empId: data.emp_id || '',
       roleid: data.roleid || undefined,
       reportingTo: data.reporting_to || undefined,
+      channelId: data.channel_id || undefined,
       email: data.email || '',
       isactive: data.isactive || true,
     },
@@ -92,7 +96,14 @@ export default function UserEditForm({ data }: { data: IUserDetails }) {
           placeholder="username..."
         />
       </Grid2>
-
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+        <SimpleTextField
+          control={control}
+          label="Employee Id"
+          name="empId"
+          placeholder="003Kotak"
+        />
+      </Grid2>
       <Grid2 size={{ xs: 12, sm: 5.8 }}>
         <ObjectSelectField
           control={control}
@@ -123,13 +134,26 @@ export default function UserEditForm({ data }: { data: IUserDetails }) {
         />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
-        <SupervisorField
+        <EditSupervisorField
           name="reportingTo"
           setValue={setValue}
           watch={watch}
           TextFieldProps={{
             variant: 'outlined',
           }}
+        />
+      </Grid2>
+
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+        <EditChannelField
+          name="channelId"
+          setValue={setValue}
+          watch={watch}
+          trigger={trigger}
+          TextFieldProps={{
+            variant: 'outlined',
+          }}
+          error={errors.channelId?.message}
         />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 5.8 }}>

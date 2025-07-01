@@ -15,26 +15,25 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
-  UseFormWatch,
 } from 'react-hook-form';
 
-interface SupervisorFieldProps<T extends FieldValues> {
+interface CreateSupervisorFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
-  watch: UseFormWatch<T>;
   lable?: string;
   TextFieldProps?: MuiTextFieldProps;
+  error?: string;
 }
 
-export default function SupervisorField<T extends FieldValues>({
+export default function CreateSupervisorField<T extends FieldValues>({
   name,
   setValue,
-  watch,
-  lable = 'Supervisor',
+  error,
+  lable = 'Select Supervisor',
   TextFieldProps,
-}: SupervisorFieldProps<T>) {
+}: CreateSupervisorFieldProps<T>) {
   const { data, isLoading } = useQuery({
-    queryKey: ['getAllBranchList'],
+    queryKey: ['getAllSupervisorList'],
     queryFn: async () => {
       const res = await getAllSupervisorList();
       return res;
@@ -69,20 +68,10 @@ export default function SupervisorField<T extends FieldValues>({
           setValue(name, newValue?.value as PathValue<T, Path<T>>);
         }}
         options={
-          data?.data
-            .filter((item) => item.userid !== watch(name))
-            .map((item) => ({
-              label: item.username,
-              value: item.userid,
-            })) || []
-        }
-        value={
-          data?.data
-            .filter((item) => item.userid === watch(name))
-            .map((item) => ({
-              label: item.username,
-              value: item.userid,
-            }))[0] as any
+          data?.data.map((item) => ({
+            label: item.username,
+            value: item.userid,
+          })) || []
         }
         size="small"
         getOptionLabel={(option) => option.label}
@@ -95,6 +84,8 @@ export default function SupervisorField<T extends FieldValues>({
             type="text"
             size="small"
             placeholder="--Search--"
+            error={!!error}
+            helperText={error}
             {...TextFieldProps}
           />
         )}

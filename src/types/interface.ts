@@ -15,7 +15,10 @@ export interface IFilterOptionsWithActiveInActive extends IFilterOptions {
 }
 export interface IUserDetails {
   userid: number;
+  channel_id: number;
+  channel_name: string;
   reporting_to: number;
+  emp_id: string;
   username: string;
   user_role_name: string;
   roleid: number;
