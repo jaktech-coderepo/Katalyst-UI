@@ -151,6 +151,8 @@ export async function updateUserDetails({
     userRole: formdata.roleid,
     reportingTo: formdata.reportingTo,
     isactive: formdata.isactive,
+    channelId: formdata.channelId,
+    empId: formdata.empId,
   };
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users/updateUser/${id}`,

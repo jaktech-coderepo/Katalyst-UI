@@ -15,23 +15,26 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormWatch,
 } from 'react-hook-form';
 
-interface SupervisorFieldProps<T extends FieldValues> {
+interface EditSupervisorFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  watch: UseFormWatch<T>;
   lable?: string;
   TextFieldProps?: MuiTextFieldProps;
   error?: string;
 }
 
-export default function SupervisorField<T extends FieldValues>({
+export default function EditSupervisorField<T extends FieldValues>({
   name,
   setValue,
+  watch,
   error,
   lable = 'Select Supervisor',
   TextFieldProps,
-}: SupervisorFieldProps<T>) {
+}: EditSupervisorFieldProps<T>) {
   const { data, isLoading } = useQuery({
     queryKey: ['getAllSupervisorList'],
     queryFn: async () => {
@@ -72,6 +75,14 @@ export default function SupervisorField<T extends FieldValues>({
             label: item.username,
             value: item.userid,
           })) || []
+        }
+        value={
+          data?.data
+            .filter((item) => item.userid === watch(name))
+            .map((item) => ({
+              label: item.username,
+              value: item.userid,
+            }))[0]
         }
         size="small"
         getOptionLabel={(option) => option.label}

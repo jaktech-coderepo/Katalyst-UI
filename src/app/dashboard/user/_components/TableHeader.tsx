@@ -76,6 +76,28 @@ export default function UserTableHeader() {
                   fontSize: 18,
                 }}
               >
+                Employee Id
+                <UnfoldMoreOutlinedIcon fontSize="inherit" />
+              </TableCell>
+              <TableCell
+                sx={{
+                  whiteSpace: 'nowrap',
+                  color: 'common.black',
+                  fontWeight: 500,
+                  fontSize: 18,
+                }}
+              >
+                Channel Name
+                <UnfoldMoreOutlinedIcon fontSize="inherit" />
+              </TableCell>
+              <TableCell
+                sx={{
+                  whiteSpace: 'nowrap',
+                  color: 'common.black',
+                  fontWeight: 500,
+                  fontSize: 18,
+                }}
+              >
                 User Role
                 <UnfoldMoreOutlinedIcon fontSize="inherit" />
               </TableCell>

@@ -28,7 +28,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import CaptchaVerifier from '@/components/CaptchaVerifier';
 import PasswordField from '@/components/PasswordField';
 import ChannelField from '@/components/ChannelField/CreateChannelField';
-import SupervisorField from './SupervisorField';
+import CreateSupervisorField from '@/components/SupervisorField/CreateSupervisorField';
 
 export default function CreateUserForm() {
   const queryClient = useQueryClient();
@@ -150,7 +150,7 @@ export default function CreateUserForm() {
         <PasswordField control={control} name="password" label="Password" />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
-        <SupervisorField
+        <CreateSupervisorField
           name="reportingTo"
           setValue={setValue}
           TextFieldProps={{

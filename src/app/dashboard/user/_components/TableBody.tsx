@@ -67,6 +67,24 @@ export default function UserTableBody() {
                   fontSize: 'inherit',
                 }}
               >
+                {row.emp_id || '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
+                {row.channel_name || '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
                 {row.user_role_name || '-'}
               </TableCell>
 
