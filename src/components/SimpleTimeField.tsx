@@ -71,11 +71,18 @@ export default function TimeField<T extends FieldValues>({
             orientation={isMobile ? 'portrait' : 'landscape'}
             defaultValue={new Date('1970-01-10T10:10:00')}
             value={
-              field.value ? new Date(`1970-01-01T${field.value}:00`) : null
+              field.value
+                ? new Date(
+                    `1970-01-01T${field.value.split(':').slice(0, 2).join(':')}:00`
+                  )
+                : null
             }
-            onChange={(dt) =>
-              field.onChange(dt?.toTimeString().slice(0, 5) || '')
-            }
+            onChange={(dt) => {
+              if (!dt) return field.onChange('');
+              const hours = dt.getHours().toString().padStart(2, '0');
+              const minutes = dt.getMinutes().toString().padStart(2, '0');
+              field.onChange(`${hours}:${minutes}`);
+            }}
             disabled={disabled}
             slotProps={{
               textField: {

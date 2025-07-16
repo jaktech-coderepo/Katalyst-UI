@@ -14,7 +14,7 @@ import getStatus from '@/utils/getStatus';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
 import USER_TYPE from '@/constants/enum';
 import DeleteModal from './DeleteModel';
-import BatchEditForm from './BatchEditForm';
+import BatchEditForm from './edit-form/BatchEditForm';
 import StatusModal from './StatusModal';
 import UploadDocumentContent from './Upload/UploadDocumentContainer';
 import { GetAllBatchContext } from './context/BatchGetAllContext';
@@ -91,7 +91,14 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.batch_start_date), 'dd-MMM-yy pp') || '-'}
+                {row.batch_start_date && row.batch_start_time
+                  ? format(
+                      new Date(
+                        `${row.batch_start_date.split('T')[0]}T${row.batch_start_time}`
+                      ),
+                      'dd-MMM-yy pp'
+                    )
+                  : '-'}
               </TableCell>
               <TableCell
                 sx={{
@@ -100,7 +107,32 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.batch_end_date), 'dd-MMM-yy pp') || '-'}
+                {row.batch_end_date && row.batch_end_time
+                  ? format(
+                      new Date(
+                        `${row.batch_end_date.split('T')[0]}T${row.batch_end_time}`
+                      ),
+                      'dd-MMM-yy pp'
+                    )
+                  : '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
+                {row.facilitator_count || '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
+                {row.data_count || '-'}
               </TableCell>
               {isActive && (
                 <TableCell
@@ -188,7 +220,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                     title="Update Batch"
                     icon={<BorderColorIcon />}
                     content={<BatchEditForm data={row} />}
-                    size="md"
+                    size="lg"
                     sx={{
                       color: 'secondary.dark',
                       bgcolor: 'secondary.100',

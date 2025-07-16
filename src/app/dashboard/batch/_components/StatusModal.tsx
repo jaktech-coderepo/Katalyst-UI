@@ -18,9 +18,14 @@ function StatusModal({ data }: { data: IBatchDetails }) {
       programme_id: data.programme_id,
       batch_description: data.batch_description,
       batch_start_date: data.batch_start_date,
+      batch_start_time: data.batch_start_time,
       batch_end_date: data.batch_end_date,
+      batch_end_time: data.batch_end_time,
       batch_status: false,
       created_by: data.created_by,
+      is_virtual: data.is_virtual,
+      has_cofacilitator: data.has_cofacilitator,
+      cofacilitators: data.cofacilitators,
     };
     const resdata = await updateBatchDetails({
       formdata,
