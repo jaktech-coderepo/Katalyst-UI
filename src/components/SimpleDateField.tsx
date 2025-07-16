@@ -1,9 +1,10 @@
 import { FormLabel, SxProps, Theme } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
+import { DatePicker, DatePickerProps } from '@mui/x-date-pickers';
 import React from 'react';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 
-interface DateFieldProps<T extends FieldValues> {
+interface DateFieldProps<T extends FieldValues>
+  extends Omit<DatePickerProps<Date>, 'value' | 'onChange'> {
   control: Control<T>;
   name: FieldPath<T>;
   label: React.ReactNode;
@@ -57,11 +58,16 @@ export default function DateField<T extends FieldValues>({
         render={({ field, fieldState: { error } }) => (
           <DatePicker
             {...rest}
-            format="dd/MM/yyyy"
-            value={field.value ? new Date(field.value) : null}
+            format="dd/MMM/yyyy"
+            formatDensity="spacious"
             views={views}
+            value={field.value ? new Date(field.value) : null}
             onChange={(date) => {
-              field.onChange(date?.toISOString());
+              if (date instanceof Date && !Number.isNaN(date.getTime())) {
+                field.onChange(date.toISOString().split('T')[0]);
+              } else {
+                field.onChange('');
+              }
             }}
             minDate={minDate}
             maxDate={maxDate}

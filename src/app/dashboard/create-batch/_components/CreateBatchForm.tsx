@@ -2,88 +2,33 @@
 
 import DateField from '@/components/SimpleDateField';
 import SubmitButton from '@/components/SubmitButton';
-import batchCreateSchema, {
-  BatchCreateType,
-} from '@/validation/batchCreate.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, FormLabel, Grid2, TextField } from '@mui/material';
-import { redirect } from 'next/navigation';
-import React, { use, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { use } from 'react';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
-import { createBatchDetails } from '@/action/batch.action';
-import { AppActionType } from '@/types';
-import { useQueryClient } from '@tanstack/react-query';
-import useSnakberContext from '@/context/AppProvider/useSnakberContext';
 import CreateBranchField from '@/components/BranchField/CreateBranchField';
 import CreateProgrammeField from '@/components/ProgrammeField/CreateProgrammeField';
 import CaptchaVerifier from '@/components/CaptchaVerifier';
+import TimeField from '@/components/SimpleTimeField';
+import timeStringToDate from '@/utils/timeStringToDate';
+import useCreateBatchForm from './useCreateBatchForm';
+import CofacilitatorSection from './CofacilitatorSection';
 
 export default function CreateBatchForm() {
   const { data } = use(GetCurrentUserContext);
-  const queryClient = useQueryClient();
-  const { dispatch } = useSnakberContext();
-  const [showCaptcha, setShowCaptcha] = useState(false);
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    trigger,
-    watch,
-    reset,
-    formState: { isValid, isSubmitted, isSubmitting, errors },
-  } = useForm<BatchCreateType>({
-    defaultValues: {
-      branch_id: undefined,
-      programme_id: undefined,
-      batch_description: '',
-      batch_start_date: '',
-      batch_end_date: '',
-      batch_status: true,
-      created_by: data.data.userid,
-    },
-    resolver: zodResolver(batchCreateSchema),
-  });
 
-  async function onSubmit(formdata: BatchCreateType) {
-    const response = await createBatchDetails(formdata);
-    if ('error' in response) {
-      dispatch({
-        type: AppActionType.ADD_ALERT,
-        payload: {
-          message: response.message ? response.message : response.error,
-          type: 'error',
-        },
-      });
-      setShowCaptcha(false);
-      if (response?.captchaRequired) {
-        setShowCaptcha(true);
-      }
-    } else {
-      dispatch({
-        type: AppActionType.ADD_ALERT,
-        payload: {
-          message: 'Form Submitted Successfully',
-          type: 'success',
-        },
-      });
-      reset();
-      setShowCaptcha(false);
-      queryClient.invalidateQueries({
-        queryKey: ['getAllBatchDetails'],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['getBatchDetailsByUserId'],
-      });
-      redirect('/dashboard/batch');
-    }
-  }
+  const { form, cofacilitators, showCaptcha, onSubmit } = useCreateBatchForm(
+    data.data.userid
+  );
+
+  const startDate = form.watch('batch_start_date');
+  const endDate = form.watch('batch_end_date');
+  const isDateRangeSelected = startDate && endDate;
 
   return (
     <Grid2
       container
       component={'form'}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={onSubmit}
       spacing={2}
       justifyContent={'center'}
       padding={2}
@@ -91,7 +36,7 @@ export default function CreateBatchForm() {
       bgcolor={'common.white'}
       borderRadius={3}
     >
-      <Grid2 size={{ xs: 12, sm: 6 }}>
+      <Grid2 size={12}>
         <FormLabel
           sx={{
             color: 'common.black',
@@ -115,12 +60,11 @@ export default function CreateBatchForm() {
         />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
-        <CreateBranchField name="branch_id" setValue={setValue} />
+        <CreateBranchField name="branch_id" setValue={form.setValue} />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
-        <CreateProgrammeField name="programme_id" setValue={setValue} />
+        <CreateProgrammeField name="programme_id" setValue={form.setValue} />
       </Grid2>
-
       {/* <Grid2 size={{ xs: 12, sm: 6 }}>
         <SimpleTextField
           control={control}
@@ -132,7 +76,7 @@ export default function CreateBatchForm() {
       </Grid2> */}
       <Grid2 size={{ xs: 12, sm: 6 }}>
         <DateField
-          control={control}
+          control={form.control}
           label="Batch Start Date"
           name="batch_start_date"
           fullWidth
@@ -140,17 +84,42 @@ export default function CreateBatchForm() {
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
         <DateField
-          control={control}
+          control={form.control}
           label="Batch End Date"
           name="batch_end_date"
+          disabled={!form.watch('batch_start_date')}
           fullWidth
           minDate={
-            watch('batch_start_date')
-              ? new Date(watch('batch_start_date'))
+            form.watch('batch_start_date')
+              ? new Date(form.watch('batch_start_date'))
               : undefined
           }
         />
       </Grid2>
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+        <TimeField
+          control={form.control}
+          name="batch_start_time"
+          label="Batch Start Time"
+          disabled={!isDateRangeSelected}
+          format="hh:mm a"
+        />
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+        <TimeField
+          control={form.control}
+          name="batch_end_time"
+          label="Batch End Time"
+          disabled={!isDateRangeSelected || !form.watch('batch_start_time')}
+          format="hh:mm a"
+          minTime={
+            form.watch('batch_start_time')
+              ? timeStringToDate(form.watch('batch_start_time'))
+              : undefined
+          }
+        />
+      </Grid2>
+      <CofacilitatorSection form={form} cofacilitators={cofacilitators} />
       <Grid2 size={{ xs: 12, sm: 6 }}>
         {showCaptcha && (
           <Box
@@ -161,19 +130,19 @@ export default function CreateBatchForm() {
             }}
           >
             <CaptchaVerifier
-              setValue={setValue}
-              trigger={trigger}
+              setValue={form.setValue}
+              trigger={form.trigger}
               name="captchaToken"
-              error={errors.captchaToken?.message}
+              error={form.formState.errors.captchaToken?.message}
             />
           </Box>
         )}
       </Grid2>
       <Grid2 size={12}>
         <SubmitButton
-          isSubmitted={isSubmitted}
-          isSubmitting={isSubmitting}
-          isValid={isValid}
+          isSubmitted={form.formState.isSubmitted}
+          isSubmitting={form.formState.isSubmitting}
+          isValid={form.formState.isValid}
           variant="contained"
           sx={{
             backgroundColor: 'secondary.dark',

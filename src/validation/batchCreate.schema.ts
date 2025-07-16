@@ -26,6 +26,25 @@ const batchCreateSchema = z
       }),
     batch_status: z.boolean().optional(),
     captchaToken: z.string().optional(),
+    batch_start_time: z.string().regex(/^\d{2}:\d{2}$/),
+    batch_end_time: z.string().regex(/^\d{2}:\d{2}$/),
+    has_cofacilitator: z.boolean().optional(),
+    cofacilitators: z
+      .array(
+        z.object({
+          cofacilitator_id: z
+            .number()
+            .optional()
+            .refine((val) => val !== undefined && val >= 1, {
+              message: 'Trainer is required',
+            }),
+          assigned_date: z.string().min(1, 'Date is required'),
+          start_time: z.string().regex(/^\d{2}:\d{2}$/),
+          end_time: z.string().regex(/^\d{2}:\d{2}$/),
+        })
+      )
+      .optional(),
+    is_virtual: z.boolean().optional(),
     // batchstartdate: z
     //   .string()
     //   .min(1, 'Batch start date is required')
