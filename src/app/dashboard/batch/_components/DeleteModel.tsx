@@ -8,12 +8,12 @@ import { Button, DialogActions, DialogTitle } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 
-function DeleteModal({ id }: { id: number }) {
+function DeleteModal({ id, batchNumber }: { id: number; batchNumber: string }) {
   const queryClient = useQueryClient();
   const { dispatch } = useSnakberContext();
   const { handleClose } = useModal();
   async function handleDelete() {
-    const res = await deleteBatchDetails({ id });
+    const res = await deleteBatchDetails({ id, batchNumber });
     if ('error' in res) {
       dispatch({
         type: AppActionType.ADD_ALERT,

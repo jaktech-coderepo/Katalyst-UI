@@ -40,7 +40,11 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                 border: 0,
                 borderBottom: 'unset',
                 borderColor: 'grey.300',
-                bgcolor: 'none',
+                bgcolor:
+                  row.has_cofacilitator &&
+                  row.created_by !== currData.data.userid
+                    ? 'grey.50'
+                    : 'none',
                 color: 'typography',
                 fontSize: 14,
               }}
@@ -54,7 +58,14 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   overflow: 'hidden',
                 }}
               >
-                <TableElement />
+                <TableElement
+                  bgColor={
+                    row.has_cofacilitator &&
+                    row.created_by === currData.data.userid
+                      ? 'primary.dark'
+                      : `linear-gradient(to Bottom, #000000 0%, #7D7C7C 100%)`
+                  }
+                />
                 {row.batch_number || '-'}
               </TableCell>
               <TableCell
@@ -230,7 +241,12 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   />
                   <IconButtonModal
                     icon={<DeleteIcon />}
-                    content={<DeleteModal id={row.batch_id} />}
+                    content={
+                      <DeleteModal
+                        id={row.batch_id}
+                        batchNumber={row.batch_number}
+                      />
+                    }
                     sx={{
                       color: 'error.main',
                       bgcolor: 'error.100',
