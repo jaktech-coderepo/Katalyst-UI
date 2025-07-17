@@ -60,6 +60,15 @@ export interface IProgrammeDetails {
   is_referenced: boolean;
 }
 
+export interface CoFacilitator {
+  id: number;
+  cofacilitator_id: number;
+  cofacilitator_name: string;
+  assigned_date: string;
+  start_time: string;
+  end_time: string;
+}
+
 export interface IBatchDetails {
   batch_id: number;
   batch_number: string;
@@ -77,14 +86,7 @@ export interface IBatchDetails {
   has_cofacilitator: boolean;
   facilitator_count: number;
   data_count: number;
-  cofacilitators: {
-    id: number;
-    cofacilitator_id: number;
-    cofacilitator_name: string;
-    assigned_date: string;
-    start_time: string;
-    end_time: string;
-  }[];
+  cofacilitators: CoFacilitator[];
   created_by: number;
   created_by_name: string;
   created_date: string;

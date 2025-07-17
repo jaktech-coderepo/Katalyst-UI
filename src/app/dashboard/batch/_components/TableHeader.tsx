@@ -127,6 +127,17 @@ export default function BatchTableHeader({ isActive }: { isActive: boolean }) {
                   fontSize: 18,
                 }}
               >
+                Co-Facilitator
+                <UnfoldMoreOutlinedIcon fontSize="inherit" />
+              </TableCell>
+              <TableCell
+                sx={{
+                  whiteSpace: 'nowrap',
+                  color: 'common.black',
+                  fontWeight: 500,
+                  fontSize: 18,
+                }}
+              >
                 Records Count
                 <UnfoldMoreOutlinedIcon fontSize="inherit" />
               </TableCell>

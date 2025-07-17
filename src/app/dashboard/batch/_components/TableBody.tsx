@@ -20,6 +20,7 @@ import UploadDocumentContent from './Upload/UploadDocumentContainer';
 import { GetAllBatchContext } from './context/BatchGetAllContext';
 import { GetBatchByUserIdContext } from './context/BatchGetByUserIdContext';
 import DownloadModalContent from './Download/DownloadModalContent';
+import CoFacilitatorTooltipTable from './CofacilitatorTooltipTable';
 
 export default function BatchTableBody({ isActive }: { isActive: boolean }) {
   const { data: currData } = use(GetCurrentUserContext);
@@ -135,6 +136,15 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                 }}
               >
                 {row.facilitator_count || '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
+                <CoFacilitatorTooltipTable data={row.cofacilitators} />
               </TableCell>
               <TableCell
                 sx={{
