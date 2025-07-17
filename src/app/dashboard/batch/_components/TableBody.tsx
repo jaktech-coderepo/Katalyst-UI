@@ -256,10 +256,10 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                     aria-label="delete"
                     disabled={!isActive}
                   />
-                  {isActive && (
+                  {(currData.data.roleid === USER_TYPE.Admin || isActive) && (
                     <IconButtonModal
                       icon={isActive ? <ToggleOffIcon /> : <ToggleOnIcon />}
-                      content={<StatusModal data={row} />}
+                      content={<StatusModal data={row} isActive={isActive} />}
                       sx={{
                         color: 'warning.dark',
                         bgcolor: 'warning.100',
