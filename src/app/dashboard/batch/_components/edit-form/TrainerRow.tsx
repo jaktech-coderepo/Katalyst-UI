@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { use } from 'react';
 import { Grid2, IconButton } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import SimpleAutoCompleteField from '@/components/SimpleAutoCompleteField';
 import DateField from '@/components/SimpleDateField';
 import TimeField from '@/components/SimpleTimeField';
 import type {
@@ -12,7 +11,8 @@ import type {
 } from 'react-hook-form';
 import timeStringToDate from '@/utils/timeStringToDate';
 import { BatchEditType } from '@/validation/batchEdit.schema';
-import trainerOptions from './data';
+import EditCoFacilitatorField from '@/components/CoFacilitatorField/EditCoFacilitatorField';
+import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
 
 interface TrainerRowProps {
   index: number;
@@ -29,21 +29,19 @@ export default function TrainerRow({
   removeTrainer,
   watch,
 }: TrainerRowProps) {
+  const { data: currData } = use(GetCurrentUserContext);
   return (
     <Grid2 size={12} container key={index} spacing={2}>
       <Grid2 size={{ xs: 12, sm: 3 }}>
-        <SimpleAutoCompleteField
+        <EditCoFacilitatorField
           name={`cofacilitators.${index}.cofacilitator_id`}
-          options={trainerOptions.map((trainer) => ({
-            label: trainer.trainer_name,
-            value: trainer.trainer_id,
-          }))}
+          watch={watch}
           setValue={setValue}
-          label="Cofacilitator"
           TextFieldProps={{
             variant: 'standard',
             sx: { minWidth: { xs: '100%', md: '200px' } },
           }}
+          userId={currData.data.userid}
         />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 3 }}>

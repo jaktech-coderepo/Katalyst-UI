@@ -68,7 +68,7 @@ export default function EditBranchField<T extends FieldValues>({
             .map((item) => ({
               label: item.branch_name,
               value: item.branch_id,
-            }))[0] as any
+            }))[0] || null
         }
         options={
           data?.data.map((item) => ({

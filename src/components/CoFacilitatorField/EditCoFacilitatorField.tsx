@@ -1,6 +1,12 @@
-import { getAllProgrammeList } from '@/action/batch.action';
+import { getAllCoFacilitatorsByUserId } from '@/action/batch.action';
 import ShowError from '@/components/ShowError';
-import { Autocomplete, FormLabel, Skeleton, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  FormLabel,
+  Skeleton,
+  TextField,
+  TextFieldProps as MuiTextFieldProps,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import {
@@ -12,21 +18,25 @@ import {
   UseFormWatch,
 } from 'react-hook-form';
 
-interface EditProgrammeFieldProps<T extends FieldValues> {
+interface EditCoFacilitatorFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
+  TextFieldProps?: MuiTextFieldProps;
+  userId: number;
 }
 
-export default function EditProgrammeField<T extends FieldValues>({
+export default function EditCoFacilitatorField<T extends FieldValues>({
   name,
   watch,
   setValue,
-}: EditProgrammeFieldProps<T>) {
+  TextFieldProps,
+  userId,
+}: EditCoFacilitatorFieldProps<T>) {
   const { data, isLoading } = useQuery({
-    queryKey: ['getAllProgrammeList'],
+    queryKey: ['getAllCoFacilitatorsByUserId', userId],
     queryFn: async () => {
-      const res = await getAllProgrammeList();
+      const res = await getAllCoFacilitatorsByUserId(userId);
       return res;
     },
   });
@@ -36,8 +46,14 @@ export default function EditProgrammeField<T extends FieldValues>({
   }
 
   if (isLoading) {
-    return <Skeleton variant="rectangular" width={'100%'} height={'100%'} />;
+    return <Skeleton variant="rectangular" width="100%" height="100%" />;
   }
+
+  const options =
+    data?.data.map((item) => ({
+      label: item.username,
+      value: item.userid,
+    })) || [];
 
   return (
     <>
@@ -51,7 +67,7 @@ export default function EditProgrammeField<T extends FieldValues>({
           paddingBlock: 1,
         }}
       >
-        Programme
+        Co-Facilitator
       </FormLabel>
       <Autocomplete
         onChange={(_event, newValue) => {
@@ -62,20 +78,8 @@ export default function EditProgrammeField<T extends FieldValues>({
               : (0 as PathValue<T, Path<T>>)
           );
         }}
-        value={
-          data?.data
-            .filter((item) => item.programme_id === watch(name))
-            .map((item) => ({
-              label: item.programme_name,
-              value: item.programme_id,
-            }))[0] || null
-        }
-        options={
-          data?.data.map((item) => ({
-            label: item.programme_name,
-            value: item.programme_id,
-          })) || []
-        }
+        value={options.find((opt) => opt.value === watch(name)) || null}
+        options={options}
         size="small"
         getOptionLabel={(option) => option.label}
         isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -87,6 +91,7 @@ export default function EditProgrammeField<T extends FieldValues>({
             type="text"
             size="small"
             placeholder="--Search--"
+            {...TextFieldProps}
           />
         )}
       />

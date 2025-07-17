@@ -5,6 +5,7 @@ import {
   CreateBatchDetailsResponse,
   GetAllBatchResponse,
   GetAllBranchResponse,
+  GetAllCoFacilitatorResponse,
   GetAllProgrammeFlagResponse,
   GetDownloadProgrammeDataResponse,
   GetDownloadProgrammeResponse,
@@ -186,6 +187,28 @@ export async function getAllProgrammeList(): Promise<
       },
       next: {
         tags: ['getAllProgrammeList'],
+      },
+    }
+  );
+  const resData = await res.json();
+  return resData;
+}
+
+export async function getAllCoFacilitatorsByUserId(
+  userId: number
+): Promise<GetAllCoFacilitatorResponse | CommonError> {
+  const token = await getAccessToken();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/batches/getCofacilatorByUserId/${userId}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ['getAllCoFacilitatorsByUserId'],
       },
     }
   );

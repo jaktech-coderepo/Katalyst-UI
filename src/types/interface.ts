@@ -162,6 +162,10 @@ export interface ISupervisorList {
   username: string;
   email: string;
 }
+export interface ICoFacilitatorList {
+  userid: number;
+  username: string;
+}
 
 export interface IChannelList {
   channel_id: number;

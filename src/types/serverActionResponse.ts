@@ -7,6 +7,7 @@ import {
   IBatchShowCase,
   IBranchDetails,
   IChannelList,
+  ICoFacilitatorList,
   IDashboardAggregateData,
   IDashboardMasterData,
   IDownloadProgramme,
@@ -78,6 +79,7 @@ export type CreateBatchDetailsResponse = CommonResponse<IBatchDetails>;
 export type PutBatchResponse = CommonResponse<IBatchDetails[]>;
 export type GetAllBranchResponse = CommonResponse<IBranchDetails[]>;
 export type GetAllProgrammeFlagResponse = CommonResponse<IAllProgramme[]>;
+export type GetAllCoFacilitatorResponse = CommonResponse<ICoFacilitatorList[]>;
 export type GetDownloadProgrammeResponse = CommonResponse<IDownloadProgramme[]>;
 export type GetDownloadProgrammeDataResponse = {
   success: boolean;
