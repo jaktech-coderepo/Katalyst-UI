@@ -1,7 +1,11 @@
 import { Box } from '@mui/material';
 import React from 'react';
 
-export default function TableElement() {
+export default function TableElement({
+  bgColor = `linear-gradient(to Bottom, #000000 0%, #7D7C7C 100%)`,
+}: {
+  bgColor?: string;
+}) {
   return (
     <Box
       sx={{
@@ -10,8 +14,8 @@ export default function TableElement() {
         top: 1,
         bottom: 1,
         width: '8px',
-        background: `linear-gradient(to Bottom, #000000 0%, #7D7C7C 100%)`,
-        bgcolor: 'primary.main',
+        background: bgColor,
+        bgcolor: bgColor,
         borderTopRightRadius: '8px',
         borderBottomRightRadius: '8px',
         content: '""',

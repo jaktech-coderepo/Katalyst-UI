@@ -60,6 +60,15 @@ export interface IProgrammeDetails {
   is_referenced: boolean;
 }
 
+export interface CoFacilitator {
+  id: number;
+  cofacilitator_id: number;
+  cofacilitator_name: string;
+  assigned_date: string;
+  start_time: string;
+  end_time: string;
+}
+
 export interface IBatchDetails {
   batch_id: number;
   batch_number: string;
@@ -69,9 +78,18 @@ export interface IBatchDetails {
   programme_name: string;
   batch_description: string;
   batch_start_date: string;
+  batch_start_time: string;
   batch_end_date: string;
+  batch_end_time: string;
   batch_status: true;
+  is_virtual: boolean;
+  enable_qr: boolean;
+  has_cofacilitator: boolean;
+  facilitator_count: number;
+  data_count: number;
+  cofacilitators: CoFacilitator[];
   created_by: number;
+  qr_code: string;
   created_by_name: string;
   created_date: string;
   updated_at: string;
@@ -145,6 +163,10 @@ export interface ISupervisorList {
   userid: number;
   username: string;
   email: string;
+}
+export interface ICoFacilitatorList {
+  userid: number;
+  username: string;
 }
 
 export interface IChannelList {

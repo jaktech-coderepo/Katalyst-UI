@@ -8,7 +8,13 @@ import { Button, DialogActions, DialogTitle } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 
-function StatusModal({ data }: { data: IBatchDetails }) {
+function StatusModal({
+  data,
+  isActive,
+}: {
+  data: IBatchDetails;
+  isActive: boolean;
+}) {
   const { dispatch } = useSnakberContext();
   const queryClient = useQueryClient();
   const { handleClose } = useModal();
@@ -18,9 +24,14 @@ function StatusModal({ data }: { data: IBatchDetails }) {
       programme_id: data.programme_id,
       batch_description: data.batch_description,
       batch_start_date: data.batch_start_date,
+      batch_start_time: data.batch_start_time,
       batch_end_date: data.batch_end_date,
-      batch_status: false,
+      batch_end_time: data.batch_end_time,
+      batch_status: !isActive,
       created_by: data.created_by,
+      is_virtual: data.is_virtual,
+      has_cofacilitator: data.has_cofacilitator,
+      cofacilitators: data.cofacilitators,
     };
     const resdata = await updateBatchDetails({
       formdata,

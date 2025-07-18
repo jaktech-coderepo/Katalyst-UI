@@ -15,11 +15,13 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
 } from 'react-hook-form';
 
 interface CreateSupervisorFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  trigger: UseFormTrigger<T>;
   lable?: string;
   TextFieldProps?: MuiTextFieldProps;
   error?: string;
@@ -28,6 +30,7 @@ interface CreateSupervisorFieldProps<T extends FieldValues> {
 export default function CreateSupervisorField<T extends FieldValues>({
   name,
   setValue,
+  trigger,
   error,
   lable = 'Select Supervisor',
   TextFieldProps,
@@ -66,6 +69,7 @@ export default function CreateSupervisorField<T extends FieldValues>({
       <Autocomplete
         onChange={(_event, newValue) => {
           setValue(name, newValue?.value as PathValue<T, Path<T>>);
+          if (trigger) trigger(name);
         }}
         options={
           data?.data.map((item) => ({

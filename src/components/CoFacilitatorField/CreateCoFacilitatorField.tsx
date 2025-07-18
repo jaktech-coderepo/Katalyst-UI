@@ -1,4 +1,4 @@
-import { getAllSupervisorList } from '@/action/user.action';
+import { getAllCoFacilitatorsByUserId } from '@/action/batch.action'; // update to your real import
 import ShowError from '@/components/ShowError';
 import {
   Autocomplete,
@@ -16,32 +16,29 @@ import {
   PathValue,
   UseFormSetValue,
   UseFormTrigger,
-  UseFormWatch,
 } from 'react-hook-form';
 
-interface EditSupervisorFieldProps<T extends FieldValues> {
+interface CreateCoFacilitatorFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
-  watch: UseFormWatch<T>;
   trigger: UseFormTrigger<T>;
-  lable?: string;
+  isFormLabel?: boolean;
   TextFieldProps?: MuiTextFieldProps;
-  error?: string;
+  userId: number;
 }
 
-export default function EditSupervisorField<T extends FieldValues>({
+export default function CreateCoFacilitatorField<T extends FieldValues>({
   name,
   setValue,
-  watch,
   trigger,
-  error,
-  lable = 'Select Supervisor',
+  isFormLabel = true,
   TextFieldProps,
-}: EditSupervisorFieldProps<T>) {
+  userId,
+}: CreateCoFacilitatorFieldProps<T>) {
   const { data, isLoading } = useQuery({
-    queryKey: ['getAllSupervisorList'],
+    queryKey: ['getAllCoFacilitatorsByUserId', userId],
     queryFn: async () => {
-      const res = await getAllSupervisorList();
+      const res = await getAllCoFacilitatorsByUserId(userId);
       return res;
     },
   });
@@ -51,11 +48,12 @@ export default function EditSupervisorField<T extends FieldValues>({
   }
 
   if (isLoading) {
-    return <Skeleton variant="rectangular" width={'100%'} height={'100%'} />;
+    return <Skeleton variant="rectangular" width="100%" height="100%" />;
   }
+
   return (
     <>
-      {lable && (
+      {isFormLabel && (
         <FormLabel
           id={name}
           sx={{
@@ -66,7 +64,7 @@ export default function EditSupervisorField<T extends FieldValues>({
             paddingBlock: 1,
           }}
         >
-          {lable}
+          Co-Facilitator
         </FormLabel>
       )}
       <Autocomplete
@@ -80,14 +78,6 @@ export default function EditSupervisorField<T extends FieldValues>({
             value: item.userid,
           })) || []
         }
-        value={
-          data?.data
-            .filter((item) => item.userid === watch(name))
-            .map((item) => ({
-              label: item.username,
-              value: item.userid,
-            }))[0] || null
-        }
         size="small"
         getOptionLabel={(option) => option.label}
         isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -99,8 +89,6 @@ export default function EditSupervisorField<T extends FieldValues>({
             type="text"
             size="small"
             placeholder="--Search--"
-            error={!!error}
-            helperText={error}
             {...TextFieldProps}
           />
         )}

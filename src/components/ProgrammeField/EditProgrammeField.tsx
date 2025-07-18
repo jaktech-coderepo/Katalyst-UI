@@ -9,12 +9,14 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
   UseFormWatch,
 } from 'react-hook-form';
 
 interface EditProgrammeFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  trigger: UseFormTrigger<T>;
   watch: UseFormWatch<T>;
 }
 
@@ -22,6 +24,7 @@ export default function EditProgrammeField<T extends FieldValues>({
   name,
   watch,
   setValue,
+  trigger,
 }: EditProgrammeFieldProps<T>) {
   const { data, isLoading } = useQuery({
     queryKey: ['getAllProgrammeList'],
@@ -61,6 +64,7 @@ export default function EditProgrammeField<T extends FieldValues>({
               ? (newValue.value as PathValue<T, Path<T>>)
               : (0 as PathValue<T, Path<T>>)
           );
+          if (trigger) trigger(name);
         }}
         value={
           data?.data
@@ -68,7 +72,7 @@ export default function EditProgrammeField<T extends FieldValues>({
             .map((item) => ({
               label: item.programme_name,
               value: item.programme_id,
-            }))[0] as any
+            }))[0] || null
         }
         options={
           data?.data.map((item) => ({

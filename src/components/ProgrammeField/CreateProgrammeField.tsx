@@ -9,17 +9,20 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
 } from 'react-hook-form';
 
 interface CreateProgrammeFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  trigger: UseFormTrigger<T>;
   label?: string;
 }
 
 export default function CreateProgrammeField<T extends FieldValues>({
   name,
   setValue,
+  trigger,
   label = 'Programme',
 }: CreateProgrammeFieldProps<T>) {
   const { data, isLoading } = useQuery({
@@ -54,6 +57,7 @@ export default function CreateProgrammeField<T extends FieldValues>({
       <Autocomplete
         onChange={(_event, newValue) => {
           setValue(name, newValue?.value as PathValue<T, Path<T>>);
+          if (trigger) trigger(name);
         }}
         options={
           data?.data.map((item) => ({

@@ -13,13 +13,16 @@ import { format } from 'date-fns';
 import getStatus from '@/utils/getStatus';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
 import USER_TYPE from '@/constants/enum';
+import QrCodeScannerOutlinedIcon from '@mui/icons-material/QrCodeScannerOutlined';
 import DeleteModal from './DeleteModel';
-import BatchEditForm from './BatchEditForm';
+import BatchEditForm from './edit-form/BatchEditForm';
 import StatusModal from './StatusModal';
 import UploadDocumentContent from './Upload/UploadDocumentContainer';
 import { GetAllBatchContext } from './context/BatchGetAllContext';
 import { GetBatchByUserIdContext } from './context/BatchGetByUserIdContext';
 import DownloadModalContent from './Download/DownloadModalContent';
+import CoFacilitatorTooltipTable from './CofacilitatorTooltipTable';
+import TrainerQRCodeDisplay from './TrainerQRCodeDisplay';
 
 export default function BatchTableBody({ isActive }: { isActive: boolean }) {
   const { data: currData } = use(GetCurrentUserContext);
@@ -40,7 +43,11 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                 border: 0,
                 borderBottom: 'unset',
                 borderColor: 'grey.300',
-                bgcolor: 'none',
+                bgcolor:
+                  row.has_cofacilitator &&
+                  row.created_by !== currData.data.userid
+                    ? 'grey.50'
+                    : 'none',
                 color: 'typography',
                 fontSize: 14,
               }}
@@ -54,7 +61,14 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   overflow: 'hidden',
                 }}
               >
-                <TableElement />
+                <TableElement
+                  bgColor={
+                    row.has_cofacilitator &&
+                    row.created_by === currData.data.userid
+                      ? 'primary.dark'
+                      : `linear-gradient(to Bottom, #000000 0%, #7D7C7C 100%)`
+                  }
+                />
                 {row.batch_number || '-'}
               </TableCell>
               <TableCell
@@ -91,7 +105,14 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.batch_start_date), 'dd-MMM-yy pp') || '-'}
+                {row.batch_start_date && row.batch_start_time
+                  ? format(
+                      new Date(
+                        `${row.batch_start_date.split('T')[0]}T${row.batch_start_time}`
+                      ),
+                      'dd-MMM-yy p'
+                    )
+                  : '-'}
               </TableCell>
               <TableCell
                 sx={{
@@ -100,7 +121,41 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   fontSize: 'inherit',
                 }}
               >
-                {format(new Date(row.batch_end_date), 'dd-MMM-yy pp') || '-'}
+                {row.batch_end_date && row.batch_end_time
+                  ? format(
+                      new Date(
+                        `${row.batch_end_date.split('T')[0]}T${row.batch_end_time}`
+                      ),
+                      'dd-MMM-yy p'
+                    )
+                  : '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
+                {row.facilitator_count || '-'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
+                <CoFacilitatorTooltipTable data={row.cofacilitators} />
+              </TableCell>
+              <TableCell
+                sx={{
+                  border: 0,
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                }}
+              >
+                {row.data_count || '-'}
               </TableCell>
               {isActive && (
                 <TableCell
@@ -149,6 +204,23 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
               >
                 <Box display="flex" justifyContent="center" gap={0.5}>
                   <ScrollDialog
+                    title="Qr Code"
+                    icon={<QrCodeScannerOutlinedIcon />}
+                    content={
+                      <TrainerQRCodeDisplay
+                        qrCodeUrl={row.qr_code}
+                        BatchNumber={row.batch_number}
+                      />
+                    }
+                    size="md"
+                    sx={{
+                      color: 'error.main',
+                      bgcolor: 'grey.50',
+                      borderRadius: 1.5,
+                    }}
+                    disabled={!row.enable_qr}
+                  />
+                  <ScrollDialog
                     title="Download Programme data"
                     icon={<FileDownloadOutlinedIcon />}
                     content={
@@ -188,7 +260,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                     title="Update Batch"
                     icon={<BorderColorIcon />}
                     content={<BatchEditForm data={row} />}
-                    size="md"
+                    size="lg"
                     sx={{
                       color: 'secondary.dark',
                       bgcolor: 'secondary.100',
@@ -198,7 +270,12 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                   />
                   <IconButtonModal
                     icon={<DeleteIcon />}
-                    content={<DeleteModal id={row.batch_id} />}
+                    content={
+                      <DeleteModal
+                        id={row.batch_id}
+                        batchNumber={row.batch_number}
+                      />
+                    }
                     sx={{
                       color: 'error.main',
                       bgcolor: 'error.100',
@@ -208,10 +285,10 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                     aria-label="delete"
                     disabled={!isActive}
                   />
-                  {isActive && (
+                  {(currData.data.roleid === USER_TYPE.Admin || isActive) && (
                     <IconButtonModal
                       icon={isActive ? <ToggleOffIcon /> : <ToggleOnIcon />}
-                      content={<StatusModal data={row} />}
+                      content={<StatusModal data={row} isActive={isActive} />}
                       sx={{
                         color: 'warning.dark',
                         bgcolor: 'warning.100',

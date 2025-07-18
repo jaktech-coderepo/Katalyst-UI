@@ -1,9 +1,12 @@
+import formatDateToISO from '@/utils/toLocalISODate';
+import toSafeDate from '@/utils/withSafeTime';
 import { FormLabel, SxProps, Theme } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
+import { DatePicker, DatePickerProps } from '@mui/x-date-pickers';
 import React from 'react';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 
-interface DateFieldProps<T extends FieldValues> {
+interface DateFieldProps<T extends FieldValues>
+  extends Omit<DatePickerProps<Date>, 'value' | 'onChange'> {
   control: Control<T>;
   name: FieldPath<T>;
   label: React.ReactNode;
@@ -57,11 +60,16 @@ export default function DateField<T extends FieldValues>({
         render={({ field, fieldState: { error } }) => (
           <DatePicker
             {...rest}
-            format="dd/MM/yyyy"
-            value={field.value ? new Date(field.value) : null}
+            format="dd/MMM/yyyy"
+            formatDensity="spacious"
             views={views}
+            value={field.value ? toSafeDate(field.value) : null}
             onChange={(date) => {
-              field.onChange(date?.toISOString());
+              const isoDate =
+                date instanceof Date && !Number.isNaN(date.getTime())
+                  ? formatDateToISO(date || new Date())
+                  : '';
+              field.onChange(isoDate);
             }}
             minDate={minDate}
             maxDate={maxDate}

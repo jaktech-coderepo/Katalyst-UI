@@ -138,6 +138,7 @@ export default function UserEditForm({ data }: { data: IUserDetails }) {
           name="reportingTo"
           setValue={setValue}
           watch={watch}
+          trigger={trigger}
           TextFieldProps={{
             variant: 'outlined',
           }}
