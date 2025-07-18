@@ -83,11 +83,13 @@ export interface IBatchDetails {
   batch_end_time: string;
   batch_status: true;
   is_virtual: boolean;
+  enable_qr: boolean;
   has_cofacilitator: boolean;
   facilitator_count: number;
   data_count: number;
   cofacilitators: CoFacilitator[];
   created_by: number;
+  qr_code: string;
   created_by_name: string;
   created_date: string;
   updated_at: string;

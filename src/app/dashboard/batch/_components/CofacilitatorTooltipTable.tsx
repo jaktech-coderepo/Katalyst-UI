@@ -12,6 +12,7 @@ import {
   Box,
 } from '@mui/material';
 import { CoFacilitator } from '@/types';
+import { format } from 'date-fns';
 
 interface CoFacilitatorTooltipTableProps {
   data: CoFacilitator[];
@@ -43,9 +44,18 @@ const CoFacilitatorTooltipTable: React.FC<CoFacilitatorTooltipTableProps> = ({
               {data.map((cf) => (
                 <TableRow key={cf.id}>
                   <TableCell>{cf.cofacilitator_name}</TableCell>
-                  <TableCell>{cf.assigned_date}</TableCell>
-                  <TableCell>{cf.start_time}</TableCell>
-                  <TableCell>{cf.end_time}</TableCell>
+                  <TableCell>
+                    {format(
+                      new Date(`${cf.assigned_date}T00:00:00`),
+                      'dd-MMM-yy'
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {format(new Date(`2021-10-18T${cf.start_time}`), 'p')}
+                  </TableCell>
+                  <TableCell>
+                    {format(new Date(`2021-10-18T${cf.end_time}`), 'p')}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

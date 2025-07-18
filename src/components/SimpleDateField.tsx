@@ -1,3 +1,5 @@
+import formatDateToISO from '@/utils/toLocalISODate';
+import toSafeDate from '@/utils/withSafeTime';
 import { FormLabel, SxProps, Theme } from '@mui/material';
 import { DatePicker, DatePickerProps } from '@mui/x-date-pickers';
 import React from 'react';
@@ -61,13 +63,13 @@ export default function DateField<T extends FieldValues>({
             format="dd/MMM/yyyy"
             formatDensity="spacious"
             views={views}
-            value={field.value ? new Date(field.value) : null}
+            value={field.value ? toSafeDate(field.value) : null}
             onChange={(date) => {
-              if (date instanceof Date && !Number.isNaN(date.getTime())) {
-                field.onChange(date.toISOString().split('T')[0]);
-              } else {
-                field.onChange('');
-              }
+              const isoDate =
+                date instanceof Date && !Number.isNaN(date.getTime())
+                  ? formatDateToISO(date || new Date())
+                  : '';
+              field.onChange(isoDate);
             }}
             minDate={minDate}
             maxDate={maxDate}

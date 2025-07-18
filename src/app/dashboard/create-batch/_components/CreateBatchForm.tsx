@@ -60,10 +60,18 @@ export default function CreateBatchForm() {
         />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
-        <CreateBranchField name="branch_id" setValue={form.setValue} />
+        <CreateBranchField
+          name="branch_id"
+          setValue={form.setValue}
+          trigger={form.trigger}
+        />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
-        <CreateProgrammeField name="programme_id" setValue={form.setValue} />
+        <CreateProgrammeField
+          name="programme_id"
+          setValue={form.setValue}
+          trigger={form.trigger}
+        />
       </Grid2>
       {/* <Grid2 size={{ xs: 12, sm: 6 }}>
         <SimpleTextField

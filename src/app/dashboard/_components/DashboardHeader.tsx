@@ -17,7 +17,7 @@ import { useForm } from 'react-hook-form';
 
 export default function DashboardHeader() {
   const [filterValue, setFilterValue] = React.useState('mtd');
-  const { setValue } = useForm<FetchProgrammeType>({
+  const { setValue, trigger } = useForm<FetchProgrammeType>({
     defaultValues: {
       programme_id: undefined,
     },
@@ -50,6 +50,7 @@ export default function DashboardHeader() {
           <CreateBranchField
             name="programme_id"
             setValue={setValue}
+            trigger={trigger}
             isFormLabel={false}
             TextFieldProps={{
               variant: 'outlined',

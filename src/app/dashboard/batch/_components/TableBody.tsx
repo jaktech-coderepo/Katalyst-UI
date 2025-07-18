@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import getStatus from '@/utils/getStatus';
 import { GetCurrentUserContext } from '@/context/User/GetCurrentUserContext';
 import USER_TYPE from '@/constants/enum';
+import QrCodeScannerOutlinedIcon from '@mui/icons-material/QrCodeScannerOutlined';
 import DeleteModal from './DeleteModel';
 import BatchEditForm from './edit-form/BatchEditForm';
 import StatusModal from './StatusModal';
@@ -21,6 +22,7 @@ import { GetAllBatchContext } from './context/BatchGetAllContext';
 import { GetBatchByUserIdContext } from './context/BatchGetByUserIdContext';
 import DownloadModalContent from './Download/DownloadModalContent';
 import CoFacilitatorTooltipTable from './CofacilitatorTooltipTable';
+import TrainerQRCodeDisplay from './TrainerQRCodeDisplay';
 
 export default function BatchTableBody({ isActive }: { isActive: boolean }) {
   const { data: currData } = use(GetCurrentUserContext);
@@ -108,7 +110,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                       new Date(
                         `${row.batch_start_date.split('T')[0]}T${row.batch_start_time}`
                       ),
-                      'dd-MMM-yy pp'
+                      'dd-MMM-yy p'
                     )
                   : '-'}
               </TableCell>
@@ -124,7 +126,7 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                       new Date(
                         `${row.batch_end_date.split('T')[0]}T${row.batch_end_time}`
                       ),
-                      'dd-MMM-yy pp'
+                      'dd-MMM-yy p'
                     )
                   : '-'}
               </TableCell>
@@ -201,6 +203,23 @@ export default function BatchTableBody({ isActive }: { isActive: boolean }) {
                 }}
               >
                 <Box display="flex" justifyContent="center" gap={0.5}>
+                  <ScrollDialog
+                    title="Qr Code"
+                    icon={<QrCodeScannerOutlinedIcon />}
+                    content={
+                      <TrainerQRCodeDisplay
+                        qrCodeUrl={row.qr_code}
+                        BatchNumber={row.batch_number}
+                      />
+                    }
+                    size="md"
+                    sx={{
+                      color: 'error.main',
+                      bgcolor: 'grey.50',
+                      borderRadius: 1.5,
+                    }}
+                    disabled={!row.enable_qr}
+                  />
                   <ScrollDialog
                     title="Download Programme data"
                     icon={<FileDownloadOutlinedIcon />}

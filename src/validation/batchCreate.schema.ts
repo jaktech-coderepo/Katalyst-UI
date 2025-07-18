@@ -3,17 +3,11 @@ import { z } from 'zod';
 const batchCreateSchema = z
   .object({
     branch_id: z
-      .number()
-      .optional()
-      .refine((val) => val !== undefined && val >= 1, {
-        message: 'Branch Name is required',
-      }),
+      .number({ message: 'Branch Name is required' })
+      .min(1, 'Branch Name is required'),
     programme_id: z
-      .number()
-      .optional()
-      .refine((val) => val !== undefined && val >= 1, {
-        message: 'Programme field is required',
-      }),
+      .number({ message: 'Programme field is required' })
+      .min(1, 'Programme field is required'),
     // batch_description: z.string().min(1, 'Batch Description is required'),
     batch_description: z.string().optional(),
     batch_start_date: z.string().min(1, 'Batch Start Date is required'),
@@ -33,11 +27,9 @@ const batchCreateSchema = z
       .array(
         z.object({
           cofacilitator_id: z
-            .number()
-            .optional()
-            .refine((val) => val !== undefined && val >= 1, {
-              message: 'Trainer is required',
-            }),
+            .number({ message: 'Trainer is required' })
+            .min(1, 'Trainer is required'),
+
           assigned_date: z.string().min(1, 'Date is required'),
           start_time: z.string().regex(/^\d{2}:\d{2}$/),
           end_time: z.string().regex(/^\d{2}:\d{2}$/),
