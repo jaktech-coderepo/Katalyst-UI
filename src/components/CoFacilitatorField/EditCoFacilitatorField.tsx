@@ -15,12 +15,14 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
   UseFormWatch,
 } from 'react-hook-form';
 
 interface EditCoFacilitatorFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  trigger: UseFormTrigger<T>;
   watch: UseFormWatch<T>;
   TextFieldProps?: MuiTextFieldProps;
   userId: number;
@@ -30,6 +32,7 @@ export default function EditCoFacilitatorField<T extends FieldValues>({
   name,
   watch,
   setValue,
+  trigger,
   TextFieldProps,
   userId,
 }: EditCoFacilitatorFieldProps<T>) {
@@ -77,6 +80,7 @@ export default function EditCoFacilitatorField<T extends FieldValues>({
               ? (newValue.value as PathValue<T, Path<T>>)
               : (0 as PathValue<T, Path<T>>)
           );
+          if (trigger) trigger(name);
         }}
         value={options.find((opt) => opt.value === watch(name)) || null}
         options={options}

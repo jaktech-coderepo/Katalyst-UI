@@ -23,7 +23,7 @@ export default function CofacilitatorSection({
   form,
   cofacilitators,
 }: CofacilitatorSectionProps) {
-  const { control, watch, setValue } = form;
+  const { control, watch, setValue, trigger } = form;
   const hasCo = watch('has_cofacilitator');
 
   return (
@@ -71,6 +71,7 @@ export default function CofacilitatorSection({
             index={i}
             control={control}
             setValue={setValue}
+            trigger={trigger}
             removeTrainer={cofacilitators.removeTrainer}
             watch={watch}
           />

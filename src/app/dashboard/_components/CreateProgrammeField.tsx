@@ -9,11 +9,13 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
 } from 'react-hook-form';
 
 interface CreateProgrammeFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
+  trigger: UseFormTrigger<T>;
   label?: string;
   setState: React.Dispatch<
     React.SetStateAction<{
@@ -27,6 +29,7 @@ interface CreateProgrammeFieldProps<T extends FieldValues> {
 export default function CreateProgrammeField<T extends FieldValues>({
   name,
   setValue,
+  trigger,
   label = 'Programme',
   setState,
 }: CreateProgrammeFieldProps<T>) {
@@ -67,6 +70,7 @@ export default function CreateProgrammeField<T extends FieldValues>({
             message: newValue?.label || '',
             status: 'idle',
           });
+          if (trigger) trigger(name);
         }}
         options={
           data?.data.map((item) => ({

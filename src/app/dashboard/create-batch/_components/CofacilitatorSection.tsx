@@ -23,7 +23,7 @@ export default function CofacilitatorSection({
   form,
   cofacilitators,
 }: CofacilitatorSectionProps) {
-  const { control, watch, setValue } = form;
+  const { control, watch, setValue, trigger } = form;
   const hasCo = watch('has_cofacilitator');
 
   return (
@@ -51,7 +51,7 @@ export default function CofacilitatorSection({
               onClick={() =>
                 cofacilitators.appendTrainer({
                   assigned_date: `${new Date().toISOString().split('T')[0]}`,
-                  cofacilitator_id: undefined,
+                  cofacilitator_id: 0,
                   start_time: watch('batch_start_time') ?? '10:10',
                   end_time: watch('batch_end_time') ?? '10:10',
                 })
@@ -71,6 +71,7 @@ export default function CofacilitatorSection({
             index={i}
             control={control}
             setValue={setValue}
+            trigger={trigger}
             removeTrainer={cofacilitators.removeTrainer}
             watch={watch}
           />

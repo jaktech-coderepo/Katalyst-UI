@@ -153,6 +153,7 @@ export default function CreateUserForm() {
         <CreateSupervisorField
           name="reportingTo"
           setValue={setValue}
+          trigger={trigger}
           TextFieldProps={{
             variant: 'outlined',
           }}

@@ -7,6 +7,7 @@ import type {
   Control,
   UseFieldArrayRemove,
   UseFormSetValue,
+  UseFormTrigger,
   UseFormWatch,
 } from 'react-hook-form';
 import type { BatchCreateType } from '@/validation/batchCreate.schema';
@@ -18,6 +19,7 @@ interface TrainerRowProps {
   index: number;
   control: Control<BatchCreateType>;
   setValue: UseFormSetValue<BatchCreateType>;
+  trigger: UseFormTrigger<BatchCreateType>;
   removeTrainer: UseFieldArrayRemove;
   watch: UseFormWatch<BatchCreateType>;
 }
@@ -26,6 +28,7 @@ export default function TrainerRow({
   index,
   control,
   setValue,
+  trigger,
   removeTrainer,
   watch,
 }: TrainerRowProps) {
@@ -36,6 +39,7 @@ export default function TrainerRow({
         <CreateCoFacilitatorField
           name={`cofacilitators.${index}.cofacilitator_id`}
           setValue={setValue}
+          trigger={trigger}
           TextFieldProps={{
             variant: 'standard',
             sx: { minWidth: { xs: '100%', md: '200px' } },

@@ -23,6 +23,7 @@ export default function BatchEditForm({ data }: BatchEditFormProps) {
     control,
     setValue,
     watch,
+    trigger,
     formState: { isValid, isSubmitted, isSubmitting },
   } = form;
 
@@ -40,13 +41,19 @@ export default function BatchEditForm({ data }: BatchEditFormProps) {
       padding={2}
     >
       <Grid2 size={{ xs: 12, sm: 6 }}>
-        <EditBranchField name="branch_id" setValue={setValue} watch={watch} />
+        <EditBranchField
+          name="branch_id"
+          setValue={setValue}
+          watch={watch}
+          trigger={trigger}
+        />
       </Grid2>
       <Grid2 size={{ xs: 12, sm: 6 }}>
         <EditProgrammeField
           name="programme_id"
           setValue={setValue}
           watch={watch}
+          trigger={trigger}
         />
       </Grid2>
 

@@ -15,6 +15,7 @@ import {
   Path,
   PathValue,
   UseFormSetValue,
+  UseFormTrigger,
   UseFormWatch,
 } from 'react-hook-form';
 
@@ -22,6 +23,7 @@ interface EditSupervisorFieldProps<T extends FieldValues> {
   name: FieldPath<T>;
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
+  trigger: UseFormTrigger<T>;
   lable?: string;
   TextFieldProps?: MuiTextFieldProps;
   error?: string;
@@ -31,6 +33,7 @@ export default function EditSupervisorField<T extends FieldValues>({
   name,
   setValue,
   watch,
+  trigger,
   error,
   lable = 'Select Supervisor',
   TextFieldProps,
@@ -69,6 +72,7 @@ export default function EditSupervisorField<T extends FieldValues>({
       <Autocomplete
         onChange={(_event, newValue) => {
           setValue(name, newValue?.value as PathValue<T, Path<T>>);
+          if (trigger) trigger(name);
         }}
         options={
           data?.data.map((item) => ({

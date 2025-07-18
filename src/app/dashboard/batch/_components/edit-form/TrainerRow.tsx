@@ -7,6 +7,7 @@ import type {
   Control,
   UseFieldArrayRemove,
   UseFormSetValue,
+  UseFormTrigger,
   UseFormWatch,
 } from 'react-hook-form';
 import timeStringToDate from '@/utils/timeStringToDate';
@@ -18,6 +19,7 @@ interface TrainerRowProps {
   index: number;
   control: Control<BatchEditType>;
   setValue: UseFormSetValue<BatchEditType>;
+  trigger: UseFormTrigger<BatchEditType>;
   removeTrainer: UseFieldArrayRemove;
   watch: UseFormWatch<BatchEditType>;
 }
@@ -26,6 +28,7 @@ export default function TrainerRow({
   index,
   control,
   setValue,
+  trigger,
   removeTrainer,
   watch,
 }: TrainerRowProps) {
@@ -37,6 +40,7 @@ export default function TrainerRow({
           name={`cofacilitators.${index}.cofacilitator_id`}
           watch={watch}
           setValue={setValue}
+          trigger={trigger}
           TextFieldProps={{
             variant: 'standard',
             sx: { minWidth: { xs: '100%', md: '200px' } },

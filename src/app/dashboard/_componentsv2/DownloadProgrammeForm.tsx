@@ -27,12 +27,13 @@ export default function DownloadProgrammeForm() {
     status: 'idle',
     message: '',
   });
-  const { setValue, handleSubmit, reset } = useForm<FetchProgrammeType>({
-    defaultValues: {
-      programme_id: undefined,
-    },
-    resolver: zodResolver(fetchProgrammeSchema),
-  });
+  const { setValue, handleSubmit, reset, trigger } =
+    useForm<FetchProgrammeType>({
+      defaultValues: {
+        programme_id: undefined,
+      },
+      resolver: zodResolver(fetchProgrammeSchema),
+    });
 
   // useEffect(() => {
   //   setState({ data: [], status: 'idle', message: 'changed field' });
@@ -108,6 +109,7 @@ export default function DownloadProgrammeForm() {
         <CreateProgrammeField
           name="programme_id"
           setValue={setValue}
+          trigger={trigger}
           label="Download Raw Programme"
           setState={setState}
         />
